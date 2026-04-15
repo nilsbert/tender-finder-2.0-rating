@@ -1,0 +1,83 @@
+:root {
+  --tf-primary: #000000;
+  --tf-accent: #00b0f0;
+  --tf-accent-bg: rgba(0, 176, 240, 0.05);
+  --tf-bg: #ffffff;
+  --tf-bg-alt: #f4f4f4;
+  --tf-text: #000000;
+  --tf-text-muted: #666666;
+  --tf-border: #e0e0e0;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Porsche Next', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  background-color: var(--tf-bg);
+  color: var(--tf-text);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+.container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 40px;
+}
+
+.header {
+  margin-bottom: 40px;
+  border-bottom: 1px solid var(--tf-border);
+  padding-bottom: 24px;
+}
+
+.title-group h1 {
+  font-size: 32px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin-bottom: 8px;
+}
+
+.subtitle {
+  color: var(--tf-text-muted);
+  font-size: 16px;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #d0d0d0;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #b0b0b0;
+}
+
+/* Drag and Drop Styles */
+.droppable-group {
+  min-height: 60px;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+}
+
+.keyword-draggable {
+  user-select: none;
+}
+
+/* Porsche Design System Theme Overrides if needed */
+p-button {
+  --p-button-border-radius: 4px;
+}

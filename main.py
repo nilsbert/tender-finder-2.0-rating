@@ -5,6 +5,10 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
 from dotenv import load_dotenv
+from core.initial_data import get_initial_keywords
+from core.repository import RatingRepository
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
 
 # Load env
 load_dotenv()
@@ -15,6 +19,24 @@ logger = logging.getLogger(__name__)
 async def lifespan(app: FastAPI):
     # Initialize DB (Schema/Tables)
     await db.init_db()
+    
+    # Seeding Logic via Repository
+    async with db.session_factory() as session:
+        async with session.begin():
+            repo = RatingRepository(session)
+            keywords = await repo.get_all_keywords()
+            if not keywords:
+                logger.info("Database empty. Seeding initial keywords...")
+                initial_data = get_initial_keywords()
+                for kw in initial_data:
+                    try:
+                        # Safely pass only available attributes
+                        kw_dict = kw.model_dump()
+                        await repo.add_keyword(**kw_dict)
+                    except Exception as e:
+                        logger.error(f"Failed to seed keyword {kw.term}: {e}")
+                logger.info(f"Seeded {len(initial_data)} keywords.")
+        
     logger.info("Rating Service starting up...")
     yield
     logger.info("Rating Service shutting down...")
@@ -23,9 +45,12 @@ app = FastAPI(
     title="Tender Finder Rating Microservice",
     description="Calculates relevancy scores and keyword matching for Tenders.",
     version="1.0.0",
-    lifespan=lifespan
+    lifespan=lifespan,
+    docs_url="/api/docs",
+    openapi_url="/api/openapi.json"
 )
 
+# API Routes
 from api.routes import router as rating_router
 app.include_router(rating_router)
 
@@ -37,6 +62,7 @@ async def health_check():
 allowed_origins = [
     os.getenv("FRONTEND_URL", "http://localhost:3000"),
     "http://localhost:3000",
+    "http://localhost:8012",
 ]
 
 app.add_middleware(
@@ -47,29 +73,15 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-from fastapi.staticfiles import StaticFiles
-from fastapi.responses import FileResponse, RedirectResponse
-
-# Serve isolated frontend static files for the rating service
+# Serve isolated frontend static files
 ui_dist_path = os.path.join(os.path.dirname(__file__), "ui", "dist")
 
 if os.path.exists(ui_dist_path):
-    app.mount("/assets", StaticFiles(directory=os.path.join(ui_dist_path, "assets")), name="assets")
-    
     @app.get("/")
     async def root_redirect():
-        return RedirectResponse(url="/ms/rating/")
-    
-    @app.get("/{full_path:path}")
-    async def serve_frontend(full_path: str):
-        if full_path.startswith("api") or full_path == "health":
-            return None
-            
-        file_path = os.path.join(ui_dist_path, full_path)
-        if os.path.isfile(file_path):
-            return FileResponse(file_path)
-            
         return FileResponse(os.path.join(ui_dist_path, "index.html"))
+    
+    app.mount("/", StaticFiles(directory=ui_dist_path, html=True), name="ui")
 else:
     @app.get("/")
     async def root():

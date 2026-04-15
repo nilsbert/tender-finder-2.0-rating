@@ -1,6 +1,7 @@
 import os
 import urllib.parse
 import logging
+from typing import List, Optional, Dict, Any
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession, async_sessionmaker
 from sqlalchemy import text
 from models.orm import Base
@@ -36,23 +37,24 @@ class DatabaseManager:
         return conn_str
 
     async def get_session(self):
+        """Standard provisioner for FastAPI Depends()"""
         async with self.session_factory() as session:
             yield session
 
     async def init_db(self):
+        """Initialize database schema and tables."""
         logger.info(f"Initializing {self.schema} database...")
         if "sqlite" in self.url:
-            logger.info("Stripping schemas for SQLite compatible metadata...")
             for table in Base.metadata.tables.values():
                 table.schema = None
         
-        logger.info("Acquiring connection for table creation...")
         async with self.engine.begin() as conn:
-            logger.info("Connection acquired.")
             if "mssql" in self.url:
                 await conn.execute(text(f"IF NOT EXISTS (SELECT * FROM sys.schemas WHERE name = '{self.schema}') EXEC('CREATE SCHEMA {self.schema}')"))
-            logger.info("Running metadata.create_all...")
             await conn.run_sync(Base.metadata.create_all)
-            logger.info("metadata.create_all finished.")
+        logger.info(f"{self.schema} database initialized successfully.")
+
+# Note: All Keyword domain methods (get_keywords, save_keyword, etc.) 
+# have been moved to RatingRepository for better DDD and DRY compliance.
 
 db = DatabaseManager("rating")

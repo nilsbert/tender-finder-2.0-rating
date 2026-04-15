@@ -1,74 +1,53 @@
-import httpx
 import logging
-import os
-from typing import List, Optional
-from .models import Keyword
+from typing import List
+from .scoring import ScoringPolicy
+from models.schemas import TenderInput, RatingResult, RatedKeyword, Keyword
 
 logger = logging.getLogger(__name__)
 
-# Use host 'qualification' if inside Docker, or localhost if running locally.
-QUALIFICATION_SERVICE_URL = os.getenv("QUALIFICATION_SERVICE_URL", "http://qualification:8002")
-
-class RatingService:
+class RatingEngine:
     """
-    Proxy service in the monolith that forwards rating requests
-    to the decoupled Qualification Microservice.
+    Stateless engine for rating tenders against keywords.
     """
     
-    @staticmethod
-    async def rate_tender(tender, keywords: List[Keyword] = None):
-        """
-        Calculates score by calling the qualification microservice.
-        Updates the tender object's score and matched_keywords in place.
-        """
-        try:
-            # We ignore the 'keywords' argument in the proxy because the
-            # microservice uses its own local keywords source of truth.
+    def rate_batch(self, tenders: List[TenderInput], keywords: List[Keyword]) -> List[RatingResult]:
+        """Rate multiple tenders in parallel using a provided keyword list."""
+        results = []
+        for tender in tenders:
+            result = self.rate_single(tender, keywords)
+            results.append(result)
             
-            # 1. Prepare payload for the stateless endpoint
-            payload = {
-                "id": tender.id,
-                "title": tender.headline,
-                "description": tender.description,
-                "full_text": tender.full_text,
-                "enrichment_locked": getattr(tender, "enrichment_locked", False)
+        return results
+
+    def rate_single(self, tender: TenderInput, keywords: List[Keyword]) -> RatingResult:
+        """
+        Core rating logic. 
+        Matches tender text against weights and terms.
+        """
+        scoring_result = ScoringPolicy.calculate_score(
+            tender_title=tender.title,
+            tender_description=tender.description,
+            tender_full_text=tender.full_text or "",
+            keywords=keywords
+        )
+        
+        matched_results = [
+            RatedKeyword(
+                term=m.keyword_term,
+                score=m.score_impact,
+                category=m.location.value
+            ) for m in scoring_result.matches
+        ]
+            
+        return RatingResult(
+            tender_id=tender.id,
+            score=scoring_result.total_score,
+            matched_keywords=matched_results,
+            metadata={
+                "title_score": scoring_result.title_score,
+                "type_scores": scoring_result.type_scores,
+                "subtype_scores": scoring_result.subtype_scores
             }
-            
-            # 2. Call the microservice
-            url = f"{QUALIFICATION_SERVICE_URL}/api/keywords/rate-stateless"
-            logger.info(f"Forwarding rating request for tender {tender.id} to {url}")
-            
-            async with httpx.AsyncClient(timeout=30.0) as client:
-                response = await client.post(url, json=payload)
-                
-                if response.status_code != 200:
-                    logger.error(f"Qualification microservice returned {response.status_code}: {response.text}")
-                    return tender
-                
-                result = response.json()
-                
-                # 3. Apply results to the monolith tender object
-                tender.score = float(result.get("score", 0.0))
-                # Map back to monolith's expected field names if necessary
-                if hasattr(tender, 'rating_total'):
-                    tender.rating_total = float(result.get("rating_total", tender.score))
-                
-                # Monolith expects list of dicts for matched_keywords
-                tender.matched_keywords = result.get("matched_keywords", [])
-                
-                logger.info(f"✓ Tender {tender.id} rated by microservice. Score: {tender.score}")
-                return tender
-                
-        except Exception as e:
-            logger.error(f"Failed to rate tender via microservice: {e}", exc_info=True)
-            return tender
+        )
 
-    # Mock/Dummy implementation of internal rerate if needed
-    @staticmethod
-    def _calculate_score(tender, keywords):
-        """LEGACY: This is no longer used but some older code might still reference it."""
-        # Returns a dummy 6-tuple to satisfy old signatures during transition
-        return (0.0, {}, [], {}, {}, {})
-
-# Singleton instance for the monolith
-rating_service = RatingService()
+rating_engine = RatingEngine()

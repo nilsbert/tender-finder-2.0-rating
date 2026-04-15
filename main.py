@@ -52,7 +52,9 @@ app = FastAPI(
 
 # API Routes
 from api.routes import router as rating_router
+from api.config import router as config_router
 app.include_router(rating_router)
+app.include_router(config_router, prefix="/api/v1")
 
 @app.get("/health")
 async def health_check():

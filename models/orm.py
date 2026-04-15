@@ -4,7 +4,7 @@ from datetime import datetime
 from typing import Optional
 import uuid
 
-from sqlalchemy import String, Float, DateTime
+from sqlalchemy import String, Float, DateTime, Integer
 from sqlalchemy.orm import Mapped, mapped_column
 from sqlalchemy.sql import func
 
@@ -31,3 +31,27 @@ class ConfigORM(Base):
     id: Mapped[str] = mapped_column(String(255), primary_key=True)
     value_json: Mapped[str] = mapped_column(String(4000), nullable=False)
     updated_at: Mapped[datetime] = mapped_column(DateTime, default=func.now(), onupdate=func.now())
+
+class ConfigRatingORM(Base):
+    """Current Rating engine configuration with precise thresholds"""
+    __tablename__ = "config_rating_current"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, default=1)
+    overall_score_threshold: Mapped[int] = mapped_column(Integer, default=70)
+    title_score_threshold: Mapped[int] = mapped_column(Integer, default=50)
+    
+    version: Mapped[int] = mapped_column(Integer, default=1)
+    updated_at: Mapped[datetime] = mapped_column(DateTime, default=func.now(), onupdate=func.now())
+
+class ConfigRatingHistoryORM(Base):
+    """Audit trail for rating configuration changes"""
+    __tablename__ = "config_rating_history"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    overall_score_threshold: Mapped[int] = mapped_column(Integer)
+    title_score_threshold: Mapped[int] = mapped_column(Integer)
+    
+    version: Mapped[int] = mapped_column(Integer)
+    change_summary: Mapped[str] = mapped_column(String(500), nullable=False)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=func.now())
+    created_by: Mapped[str] = mapped_column(String(100), default="Alex (Admin)")

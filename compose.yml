@@ -1,0 +1,45 @@
+# ============================================================
+# Rating Microservice — Standalone Docker Compose
+# ============================================================
+# Usage:  docker compose up --build
+# This runs the Rating MS + its own MSSQL instance in isolation.
+# ============================================================
+
+services:
+  rating:
+    build: .
+    ports:
+      - "8012:8012"
+    depends_on:
+      sqlserver:
+        condition: service_healthy
+    environment:
+      - MSSQL_CONNECTION_STRING=Driver={ODBC Driver 18 for SQL Server};Server=tcp:sqlserver,1433;Database=rating;Uid=sa;Pwd={StrongPassword123!};Encrypt=no;TrustServerCertificate=yes;
+      - PORT=8012
+      - FRONTEND_URL=http://localhost:3000
+    networks:
+      - rating-net
+
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    environment:
+      - ACCEPT_EULA=Y
+      - MSSQL_SA_PASSWORD=StrongPassword123!
+      - MSSQL_PID=Developer
+    ports:
+      - "1435:1433"
+    volumes:
+      - rating-data:/var/opt/mssql
+    healthcheck:
+      test: ["CMD-SHELL", "/opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P 'StrongPassword123!' -Q 'SELECT 1' -C"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    networks:
+      - rating-net
+
+volumes:
+  rating-data:
+
+networks:
+  rating-net:

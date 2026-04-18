@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo, useRef, type FC, type ReactNode } from 'react'
+import AdminHeader from './AdminHeader';
 import {
   PButton,
   PTextFieldWrapper,
@@ -24,10 +25,11 @@ const StandardPageHeader: FC<{ title: string; subtitle?: string; actions?: React
   title, subtitle, actions, children 
 }) => (
   <div style={{
-    backgroundColor: 'white',
+    backgroundColor: 'var(--tf-bg-card)',
     padding: '24px',
-    borderRadius: '8px',
-    boxShadow: '0 2px 8px rgba(0,0,0,0.05)',
+    borderRadius: 'var(--tf-radius)',
+    border: '1px solid var(--tf-border)',
+    boxShadow: '0 2px 8px rgba(0,0,0,0.2)',
     marginBottom: '24px'
   }}>
     <div style={{
@@ -37,8 +39,8 @@ const StandardPageHeader: FC<{ title: string; subtitle?: string; actions?: React
       marginBottom: children ? '24px' : '0'
     }}>
       <div>
-        <PHeading size="large">{title}</PHeading>
-        {subtitle && <PText size="small" color="contrast-medium">{subtitle}</PText>}
+        <PHeading size="large" theme="dark">{title}</PHeading>
+        {subtitle && <PText size="small" color="inherit" style={{ opacity: 0.6 }} theme="dark">{subtitle}</PText>}
       </div>
       {actions && <div style={{ display: 'flex', gap: '16px' }}>{actions}</div>}
     </div>
@@ -47,38 +49,7 @@ const StandardPageHeader: FC<{ title: string; subtitle?: string; actions?: React
 );
 
 const StandaloneHeader: FC = () => (
-  <header style={{
-    backgroundColor: 'white',
-    borderBottom: '1px solid #e0e0e0',
-    position: 'sticky',
-    top: 0,
-    zIndex: 10
-  }}>
-      <div style={{
-        height: '64px',
-        padding: '0 40px',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between'
-      }}>
-        <PHeading size="large" tag="h1">Tender Finder | <span style={{ fontWeight: 'normal', color: '#666' }}>Rating & Qualification</span></PHeading>
-        <div style={{ display: 'flex', gap: '8px' }}>
-             <PTag color="background-base">Sovereign Service v2.0</PTag>
-        </div>
-      </div>
-    <div style={{ borderBottom: '1px solid #e0e0e0', backgroundColor: 'white' }}>
-        <div style={{ display: 'flex', padding: '0 40px', gap: '24px', alignItems: 'center' }}>
-          <div style={{ 
-            padding: '12px 0', 
-            borderBottom: '2px solid #000', 
-            color: '#000',
-            fontWeight: 'bold'
-          }}>
-            <PText size="small" weight="semi-bold" color="inherit">Keyword Management</PText>
-          </div>
-        </div>
-    </div>
-  </header>
+  <AdminHeader activeService="rating" />
 );
 
 function App() {
@@ -314,7 +285,7 @@ function App() {
   const totalKeywords = keywords.length
 
   return (
-    <div style={{ minHeight: '100vh', backgroundColor: '#f5f5f5' }}>
+    <div style={{ minHeight: '100vh', backgroundColor: 'var(--tf-bg-surface)' }}>
       <StandaloneHeader />
 
       <main style={{ maxWidth: '1400px', margin: '0 auto', padding: '32px 40px' }}>
@@ -325,7 +296,7 @@ function App() {
             <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', marginTop: '24px' }}>
               <PFlex alignItems="flex-end" style={{ gap: '16px', flexWrap: 'wrap' }}>
                 <div style={{ flex: 1, minWidth: '200px' }}>
-                  <PTextFieldWrapper label="Search keywords">
+                  <PTextFieldWrapper label="Search keywords" theme="dark">
                     <input
                       type="text"
                       placeholder="Search terms..."
@@ -337,7 +308,7 @@ function App() {
                 </div>
 
                 <div style={{ minWidth: '140px' }}>
-                  <PSelectWrapper label="Type">
+                  <PSelectWrapper label="Type" theme="dark">
                     <select value={typeFilter} onChange={e => setTypeFilter(e.target.value)} style={{ height: '40px' }}>
                       <option value="">All Types</option>
                       <option value="Service">Service</option>
@@ -348,7 +319,7 @@ function App() {
                 </div>
 
                 <div style={{ minWidth: '180px' }}>
-                  <PSelectWrapper label="Sub-type">
+                  <PSelectWrapper label="Sub-type" theme="dark">
                     <select value={subTypeFilter} onChange={e => setSubTypeFilter(e.target.value)} style={{ height: '40px' }}>
                       <option value="">All Sub-types</option>
                       {existingSubTypes.map(cat => (<option key={cat} value={cat}>{cat}</option>))}
@@ -357,19 +328,19 @@ function App() {
                 </div>
 
                 {(searchQuery || typeFilter || subTypeFilter) && (
-                  <PButton variant="tertiary" icon="close" onClick={clearFilters} style={{ marginBottom: '2px' }}>Clear</PButton>
+                  <PButton variant="tertiary" icon="close" onClick={clearFilters} style={{ marginBottom: '2px' }} theme="dark">Clear</PButton>
                 )}
               </PFlex>
 
               <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-                <PButton variant="primary" icon="plus" onClick={openAddModal}>Add Keyword</PButton>
+                <PButton variant="primary" icon="plus" onClick={openAddModal} theme="dark">Add Keyword</PButton>
                 <PFlex>
-                  <PButton variant="tertiary" icon="download" onClick={handleExport}>Export</PButton>
-                  <PButton variant="tertiary" icon="upload" onClick={handleImportClick} loading={isImporting}>Import</PButton>
+                  <PButton variant="tertiary" icon="download" onClick={handleExport} theme="dark">Export</PButton>
+                  <PButton variant="tertiary" icon="upload" onClick={handleImportClick} loading={isImporting} theme="dark">Import</PButton>
                   <input type="file" ref={fileInputRef} style={{ display: 'none' }} accept="application/json,.json,.JSON,application/x-yaml,.yaml,.yml" onChange={handleFileSelect} />
                 </PFlex>
-                <div style={{ textAlign: 'right', color: '#666', flex: 1 }}>
-                  <PText size="small">{totalKeywords} keywords defined</PText>
+                <div style={{ textAlign: 'right', color: 'var(--tf-text-muted)', flex: 1 }}>
+                  <PText size="small" theme="dark">{totalKeywords} keywords defined</PText>
                 </div>
               </div>
             </div>
@@ -384,16 +355,16 @@ function App() {
                   type={typeGroup.type}
                   isExpanded={expandedGroups.has(typeGroup.type)}
                   onAutoExpand={() => toggleGroup(typeGroup.type)}
-                  style={{ backgroundColor: 'white', borderRadius: '8px', border: '1px solid #e0e0e0', overflow: 'hidden' }}
+                  style={{ backgroundColor: 'var(--tf-bg-card)', borderRadius: 'var(--tf-radius)', border: '1px solid var(--tf-border)', overflow: 'hidden' }}
                 >
                   <div
-                    style={{ padding: '16px 24px', backgroundColor: '#f9f9f9', borderBottom: '1px solid #eee', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}
+                    style={{ padding: '16px 24px', backgroundColor: 'rgba(255,255,255,0.02)', borderBottom: '1px solid var(--tf-border)', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}
                     onClick={() => toggleGroup(typeGroup.type)}
                   >
                     <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                      <PIcon name={expandedGroups.has(typeGroup.type) ? 'arrow-head-down' : 'arrow-head-right'} />
-                      <PHeading size="small" tag="h3">{typeGroup.type}s</PHeading>
-                      <PTag color="background-base">{typeGroup.subtypes.reduce((acc, sub) => acc + sub.keywords.length, 0)}</PTag>
+                      <PIcon name={expandedGroups.has(typeGroup.type) ? 'arrow-head-down' : 'arrow-head-right'} theme="dark" />
+                      <PHeading size="small" tag="h3" theme="dark">{typeGroup.type}s</PHeading>
+                      <PTag color="background-base" theme="dark">{typeGroup.subtypes.reduce((acc, sub) => acc + sub.keywords.length, 0)}</PTag>
                     </div>
                   </div>
 
@@ -409,12 +380,12 @@ function App() {
                           onAutoExpand={() => toggleGroup(`${typeGroup.type}-${subTypeGroup.name}`)}
                         >
                           <div
-                            style={{ padding: '10px 24px 10px 48px', backgroundColor: '#fff', borderTop: '1px solid #f0f0f0', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px' }}
+                            style={{ padding: '10px 24px 10px 48px', backgroundColor: 'transparent', borderTop: '1px solid var(--tf-border)', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px' }}
                             onClick={() => toggleGroup(`${typeGroup.type}-${subTypeGroup.name}`)}
                           >
-                            <PIcon name={expandedGroups.has(`${typeGroup.type}-${subTypeGroup.name}`) ? 'arrow-head-down' : 'arrow-head-right'} size="small" />
-                            <PText weight="semi-bold" size="small">{subTypeGroup.name}</PText>
-                            <PText size="x-small" color="contrast-low">({subTypeGroup.keywords.length})</PText>
+                            <PIcon name={expandedGroups.has(`${typeGroup.type}-${subTypeGroup.name}`) ? 'arrow-head-down' : 'arrow-head-right'} size="small" theme="dark" />
+                            <PText weight="semi-bold" size="small" theme="dark">{subTypeGroup.name}</PText>
+                            <PText size="x-small" color="inherit" style={{ opacity: 0.5 }} theme="dark">({subTypeGroup.keywords.length})</PText>
                           </div>
 
                           {expandedGroups.has(`${typeGroup.type}-${subTypeGroup.name}`) && (
@@ -423,7 +394,7 @@ function App() {
                                 <DraggableKeyword key={k.id} keyword={k} onEdit={handleEdit} />
                               ))}
                               {subTypeGroup.keywords.length === 0 && (
-                                <PText color="contrast-low" size="small" style={{ padding: '8px' }}>Empty group.</PText>
+                                <PText color="inherit" style={{ opacity: 0.5, padding: '8px' }} size="small" theme="dark">Empty group.</PText>
                               )}
                             </div>
                           )}
@@ -439,10 +410,10 @@ function App() {
           </DndContext>
       </main>
 
-      <PModal open={isModalOpen} onDismiss={() => setIsModalOpen(false)} heading={editingId ? 'Edit Keyword' : 'New Keyword'}>
+      <PModal open={isModalOpen} onDismiss={() => setIsModalOpen(false)} heading={editingId ? 'Edit Keyword' : 'New Keyword'} theme="dark">
         <form onSubmit={handleSubmit}>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '24px', padding: '16px 0' }}>
-            <PTextFieldWrapper label="Term">
+            <PTextFieldWrapper label="Term" theme="dark">
               <input
                 autoFocus
                 required
@@ -455,7 +426,7 @@ function App() {
             </PTextFieldWrapper>
 
             <div>
-              <PText weight="semi-bold" style={{ marginBottom: '12px' }}>
+              <PText weight="semi-bold" style={{ marginBottom: '12px' }} theme="dark">
                 Weight / Score Impact: {formData.weight.toFixed(1)}
               </PText>
               <input
@@ -465,18 +436,18 @@ function App() {
                 step="0.5"
                 value={formData.weight}
                 onChange={e => setFormData({ ...formData, weight: parseFloat(e.target.value) })}
-                style={{ width: '100%' }}
+                style={{ width: '100%', accentColor: 'var(--tf-accent)' }}
               />
               <PFlex justifyContent="space-between" style={{ marginTop: '4px' }}>
-                <PText size="x-small" color="contrast-low">Exclusion (-5.0)</PText>
-                <PText size="x-small" color="contrast-low">Neutral (0)</PText>
-                <PText size="x-small" color="contrast-low">Highly Relevant (5.0)</PText>
+                <PText size="x-small" color="inherit" style={{ opacity: 0.5 }} theme="dark">Exclusion (-5.0)</PText>
+                <PText size="x-small" color="inherit" style={{ opacity: 0.5 }} theme="dark">Neutral (0)</PText>
+                <PText size="x-small" color="inherit" style={{ opacity: 0.5 }} theme="dark">Highly Relevant (5.0)</PText>
               </PFlex>
             </div>
 
             <PFlex justifyContent="flex-end" style={{ gap: '12px' }}>
-              <PButton type="button" variant="tertiary" onClick={() => setIsModalOpen(false)}>Cancel</PButton>
-              <PButton type="submit">{editingId ? 'Save Changes' : 'Add Keyword'}</PButton>
+              <PButton type="button" variant="tertiary" onClick={() => setIsModalOpen(false)} theme="dark">Cancel</PButton>
+              <PButton type="submit" theme="dark">{editingId ? 'Save Changes' : 'Add Keyword'}</PButton>
             </PFlex>
           </div>
         </form>

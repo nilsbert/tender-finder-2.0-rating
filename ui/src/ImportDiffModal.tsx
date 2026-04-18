@@ -36,29 +36,30 @@ export const ImportDiffModal: React.FC<ImportDiffModalProps> = ({
             onDismiss={onClose}
             heading="Import Preview"
             style={{ width: '800px', maxWidth: '90vw' }}
+            theme="dark"
         >
             <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
-                <PText>
+                <PText theme="dark">
                     Review the changes that will be applied to your keywords database.
                 </PText>
 
                 <PFlex style={{ gap: '16px', flexWrap: 'wrap' }}>
-                    <PTag color={hasCreates ? "success" : "background-surface"}>Creating: {summary.created.length}</PTag>
-                    <PTag color={hasUpdates ? "warning" : "background-surface"}>Updating: {summary.updated.length}</PTag>
-                    <PTag color={hasDeletes ? "error" : "background-surface"}>Missing in file: {summary.deleted.length}</PTag>
+                    <PTag color={hasCreates ? "success" : "background-surface"} theme="dark">Creating: {summary.created.length}</PTag>
+                    <PTag color={hasUpdates ? "warning" : "background-surface"} theme="dark">Updating: {summary.updated.length}</PTag>
+                    <PTag color={hasDeletes ? "error" : "background-surface"} theme="dark">Missing in file: {summary.deleted.length}</PTag>
                 </PFlex>
 
-                <div style={{ maxHeight: '400px', overflowY: 'auto', border: '1px solid #e0e0e0', borderRadius: '4px', padding: '16px' }}>
+                <div style={{ maxHeight: '400px', overflowY: 'auto', border: '1px solid var(--tf-border)', borderRadius: 'var(--tf-radius-sm)', padding: '16px', backgroundColor: 'var(--tf-bg-input)' }}>
 
                     {/* Creates */}
                     {hasCreates && (
                         <div style={{ marginBottom: '24px' }}>
-                            <PHeading size="small" style={{ marginBottom: '8px' }} color="success">New Keywords ({summary.created.length})</PHeading>
+                            <PHeading size="small" style={{ marginBottom: '8px' }} color="success" theme="dark">New Keywords ({summary.created.length})</PHeading>
                             <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
                                 {summary.created.map((k, i) => (
-                                    <li key={i} style={{ padding: '4px 0', borderBottom: '1px solid #f0f0f0', display: 'flex', justifyContent: 'space-between' }}>
-                                        <PText weight="semi-bold">{k.term}</PText>
-                                        <PText size="small" color="contrast-medium">{k.type} - {k.weight}</PText>
+                                    <li key={i} style={{ padding: '4px 0', borderBottom: '1px solid var(--tf-border)', display: 'flex', justifyContent: 'space-between' }}>
+                                        <PText weight="semi-bold" theme="dark">{k.term}</PText>
+                                        <PText size="small" color="inherit" style={{ opacity: 0.6 }} theme="dark">{k.type} - {k.weight}</PText>
                                     </li>
                                 ))}
                             </ul>
@@ -68,12 +69,12 @@ export const ImportDiffModal: React.FC<ImportDiffModalProps> = ({
                     {/* Updates */}
                     {hasUpdates && (
                         <div style={{ marginBottom: '24px' }}>
-                            <PHeading size="small" style={{ marginBottom: '8px' }} color="warning">Updated Keywords ({summary.updated.length})</PHeading>
+                            <PHeading size="small" style={{ marginBottom: '8px' }} color="warning" theme="dark">Updated Keywords ({summary.updated.length})</PHeading>
                             <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
                                 {summary.updated.map((k, i) => (
-                                    <li key={i} style={{ padding: '4px 0', borderBottom: '1px solid #f0f0f0', display: 'flex', justifyContent: 'space-between' }}>
-                                        <PText weight="semi-bold">{k.term}</PText>
-                                        <PText size="small" color="contrast-medium">New Weight: {k.weight}</PText>
+                                    <li key={i} style={{ padding: '4px 0', borderBottom: '1px solid var(--tf-border)', display: 'flex', justifyContent: 'space-between' }}>
+                                        <PText weight="semi-bold" theme="dark">{k.term}</PText>
+                                        <PText size="small" color="inherit" style={{ opacity: 0.6 }} theme="dark">New Weight: {k.weight}</PText>
                                     </li>
                                 ))}
                             </ul>
@@ -83,13 +84,13 @@ export const ImportDiffModal: React.FC<ImportDiffModalProps> = ({
                     {/* Deletes */}
                     {hasDeletes && (
                         <div>
-                            <PHeading size="small" style={{ marginBottom: '8px' }} color="error">Missing in Upload ({summary.deleted.length})</PHeading>
-                            <PText size="small" style={{ marginBottom: '8px' }}>These keywords exist in the DB but are not in your file.</PText>
+                            <PHeading size="small" style={{ marginBottom: '8px' }} color="error" theme="dark">Missing in Upload ({summary.deleted.length})</PHeading>
+                            <PText size="small" style={{ marginBottom: '8px' }} theme="dark">These keywords exist in the DB but are not in your file.</PText>
                             <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
                                 {summary.deleted.map((k, i) => (
-                                    <li key={i} style={{ padding: '4px 0', borderBottom: '1px solid #f0f0f0', display: 'flex', justifyContent: 'space-between' }}>
-                                        <PText weight="semi-bold">{k.term}</PText>
-                                        <PText size="small" color="contrast-medium">{k.type}</PText>
+                                    <li key={i} style={{ padding: '4px 0', borderBottom: '1px solid var(--tf-border)', display: 'flex', justifyContent: 'space-between' }}>
+                                        <PText weight="semi-bold" theme="dark">{k.term}</PText>
+                                        <PText size="small" color="inherit" style={{ opacity: 0.6 }} theme="dark">{k.type}</PText>
                                     </li>
                                 ))}
                             </ul>
@@ -98,38 +99,38 @@ export const ImportDiffModal: React.FC<ImportDiffModalProps> = ({
 
                     {!hasCreates && !hasUpdates && !hasDeletes && (
                         <div style={{ textAlign: 'center', padding: '32px' }}>
-                            <PText color="success">No changes detected. Your keywords are in sync.</PText>
+                            <PText color="success" theme="dark">No changes detected. Your keywords are in sync.</PText>
                         </div>
                     )}
                 </div>
 
-                <div style={{ marginTop: '16px', borderTop: '1px solid #e0e0e0', paddingTop: '16px' }}>
+                <div style={{ marginTop: '16px', borderTop: '1px solid var(--tf-border)', paddingTop: '16px' }}>
                     {hasDeletes ? (
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-                            <div style={{ backgroundColor: '#FFF5F5', padding: '16px', borderRadius: '4px', border: '1px solid #FFD6D6' }}>
+                            <div style={{ backgroundColor: 'rgba(255, 0, 0, 0.1)', padding: '16px', borderRadius: '4px', border: '1px solid rgba(255, 0, 0, 0.2)' }}>
                                 <PFlex alignItems="center" style={{ gap: '12px' }}>
-                                    <PIcon name="warning" color="notification-error" />
-                                    <PText color="notification-error" weight="semi-bold">Warning: {summary.deleted.length} keywords are missing from your file.</PText>
+                                    <PIcon name="warning" color="notification-error" theme="dark" />
+                                    <PText color="notification-error" weight="semi-bold" theme="dark">Warning: {summary.deleted.length} keywords are missing from your file.</PText>
                                 </PFlex>
-                                <PText size="small" style={{ marginTop: '8px', marginLeft: '36px' }}>
+                                <PText size="small" style={{ marginTop: '8px', marginLeft: '36px' }} theme="dark">
                                     If you choose "Sync & Delete", these keywords will be permanently removed from the database.
                                 </PText>
                             </div>
 
                             <PFlex justifyContent="flex-end" style={{ gap: '12px' }}>
-                                <PButton variant="tertiary" onClick={onClose} disabled={isExecuting}>Cancel</PButton>
-                                <PButton variant="secondary" onClick={() => onConfirm(false)} loading={isExecuting}>
+                                <PButton variant="tertiary" onClick={onClose} disabled={isExecuting} theme="dark">Cancel</PButton>
+                                <PButton variant="secondary" onClick={() => onConfirm(false)} loading={isExecuting} theme="dark">
                                     Merge (Keep Missing)
                                 </PButton>
-                                <PButton variant="primary" color="notification-error" onClick={() => onConfirm(true)} loading={isExecuting}>
+                                <PButton variant="primary" color="notification-error" onClick={() => onConfirm(true)} loading={isExecuting} theme="dark">
                                     Sync (Delete Missing)
                                 </PButton>
                             </PFlex>
                         </div>
                     ) : (
                         <PFlex justifyContent="flex-end" style={{ gap: '12px' }}>
-                            <PButton variant="tertiary" onClick={onClose} disabled={isExecuting}>Cancel</PButton>
-                            <PButton variant="primary" onClick={() => onConfirm(false)} loading={isExecuting} disabled={!hasCreates && !hasUpdates}>
+                            <PButton variant="tertiary" onClick={onClose} disabled={isExecuting} theme="dark">Cancel</PButton>
+                            <PButton variant="primary" onClick={() => onConfirm(false)} loading={isExecuting} disabled={!hasCreates && !hasUpdates} theme="dark">
                                 Confirm Import
                               </PButton>
                         </PFlex>

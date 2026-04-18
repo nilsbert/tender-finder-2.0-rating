@@ -1,12 +1,15 @@
 :root {
-  --tf-primary: #000000;
-  --tf-accent: #00b0f0;
-  --tf-accent-bg: rgba(0, 176, 240, 0.05);
-  --tf-bg: #ffffff;
-  --tf-bg-alt: #f4f4f4;
-  --tf-text: #000000;
-  --tf-text-muted: #666666;
-  --tf-border: #e0e0e0;
+  --tf-bg-surface: #0e0e12;
+  --tf-bg-card: #18181f;
+  --tf-bg-card-hover: #22222c;
+  --tf-bg-input: #1e1e28;
+  --tf-border: rgba(255, 255, 255, 0.06);
+  --tf-text: #e8e8ec;
+  --tf-text-muted: #8b8b9e;
+  --tf-accent: #d5001c; /* Porsche Red */
+  --tf-accent-soft: rgba(213, 0, 28, 0.12);
+  --tf-radius: 12px;
+  --tf-radius-sm: 8px;
 }
 
 * {
@@ -16,35 +19,18 @@
 }
 
 body {
-  font-family: 'Porsche Next', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-  background-color: var(--tf-bg);
+  font-family: 'Inter', 'Porsche Next', -apple-system, BlinkMacSystemFont, sans-serif;
+  background-color: var(--tf-bg-surface);
   color: var(--tf-text);
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
 }
 
 .container {
   max-width: 1400px;
   margin: 0 auto;
   padding: 40px;
-}
-
-.header {
-  margin-bottom: 40px;
-  border-bottom: 1px solid var(--tf-border);
-  padding-bottom: 24px;
-}
-
-.title-group h1 {
-  font-size: 32px;
-  font-weight: 700;
-  letter-spacing: -0.02em;
-  margin-bottom: 8px;
-}
-
-.subtitle {
-  color: var(--tf-text-muted);
-  font-size: 16px;
 }
 
 /* Custom Scrollbar */
@@ -58,18 +44,18 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #d0d0d0;
+  background: var(--tf-border);
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #b0b0b0;
+  background: var(--tf-text-muted);
 }
 
 /* Drag and Drop Styles */
 .droppable-group {
   min-height: 60px;
-  border-radius: 8px;
+  border-radius: var(--tf-radius);
   transition: all 0.2s ease;
 }
 
@@ -77,7 +63,15 @@ body {
   user-select: none;
 }
 
-/* Porsche Design System Theme Overrides if needed */
-p-button {
-  --p-button-border-radius: 4px;
+/* Input overrides for dark mode */
+input, select {
+  background-color: var(--tf-bg-input) !important;
+  color: var(--tf-text) !important;
+  border: 1px solid var(--tf-border) !important;
+  border-radius: 4px;
+  padding: 8px 12px;
+}
+
+input:focus, select:focus {
+  outline: 1px solid var(--tf-accent);
 }

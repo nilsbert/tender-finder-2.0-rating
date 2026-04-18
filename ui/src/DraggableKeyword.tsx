@@ -48,23 +48,23 @@ export function DraggableKeyword({ keyword, onEdit }: DraggableKeywordProps) {
           opacity: 1 !important;
         }
         .keyword-panel:hover {
-          box-shadow: 0 2px 6px rgba(0,0,0,0.1) !important;
-          border-color: #d0d0d0 !important;
+          box-shadow: 0 4px 12px rgba(0,0,0,0.4) !important;
+          border-color: var(--tf-accent) !important;
         }
       `}</style>
             <div
                 style={{
                     margin: '6px 12px 6px 60px',
                     padding: '8px 12px',
-                    backgroundColor: 'white',
-                    borderRadius: '4px',
-                    border: '1px solid #e0e0e0',
+                    backgroundColor: 'var(--tf-bg-input)',
+                    borderRadius: 'var(--tf-radius-sm)',
+                    border: '1px solid var(--tf-border)',
                     display: 'inline-flex',
                     alignItems: 'center',
                     gap: '12px',
                     position: 'relative',
-                    boxShadow: '0 1px 2px rgba(0,0,0,0.05)',
-                    transition: 'box-shadow 200ms, border-color 200ms',
+                    boxShadow: '0 2px 4px rgba(0,0,0,0.2)',
+                    transition: 'all 200ms',
                     maxWidth: 'fit-content'
                 }}
                 className="keyword-panel"
@@ -75,19 +75,21 @@ export function DraggableKeyword({ keyword, onEdit }: DraggableKeywordProps) {
                     opacity: 0.3,
                     transition: 'opacity 200ms'
                 }} className="drag-handle">
-                    <PIcon name="drag" size="small" />
+                    <PIcon name="drag" size="small" theme="dark" />
                 </div>
-                <PText weight="semi-bold" size="small">{keyword.term}</PText>
+                <PText weight="semi-bold" size="small" theme="dark">{keyword.term}</PText>
                 <PFlex alignItems="center" style={{ gap: '4px' }}>
                     <PIcon
                         name={displayWeight >= 0 ? 'arrow-head-up' : 'arrow-head-down'}
                         color={displayWeight >= 0 ? 'notification-success' : 'notification-error'}
                         size="x-small"
+                        theme="dark"
                     />
                     <PText
                         size="x-small"
                         color={displayWeight >= 0 ? 'notification-success' : 'notification-error'}
                         weight="semi-bold"
+                        theme="dark"
                     >
                         {displayWeight > 0 ? '+' : ''}{displayWeight.toFixed(1)}
                     </PText>
@@ -99,6 +101,7 @@ export function DraggableKeyword({ keyword, onEdit }: DraggableKeywordProps) {
                         hideLabel
                         onClick={() => onEdit(keyword)}
                         compact
+                        theme="dark"
                     >Edit</PButton>
                 </div>
             </div>

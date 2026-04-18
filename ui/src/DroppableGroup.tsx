@@ -54,8 +54,8 @@ export function DroppableGroup({
 
     const dropZoneStyle: React.CSSProperties = {
         ...style,
-        border: isOver && active ? '2px solid #00b0f0' : style.border || 'none',
-        backgroundColor: isOver && active ? 'rgba(0, 176, 240, 0.05)' : style.backgroundColor,
+        border: isOver && active ? '2px solid var(--tf-accent)' : style.border || 'none',
+        backgroundColor: isOver && active ? 'rgba(213, 0, 28, 0.05)' : style.backgroundColor,
         transition: 'all 200ms ease'
     }
 

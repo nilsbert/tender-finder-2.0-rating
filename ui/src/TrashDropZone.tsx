@@ -12,9 +12,9 @@ export function TrashDropZone() {
     const dropZoneStyle = {
         padding: '24px',
         margin: '24px 16px',
-        border: isOver && active ? '3px dashed var(--pds-notification-error)' : '2px dashed #e0e0e0',
-        borderRadius: '8px',
-        backgroundColor: isOver && active ? 'rgba(255, 0, 0, 0.05)' : '#fafafa',
+        border: isOver && active ? '3px dashed var(--pds-notification-error)' : '2px dashed var(--tf-border)',
+        borderRadius: 'var(--tf-radius)',
+        backgroundColor: isOver && active ? 'rgba(255, 0, 0, 0.1)' : 'rgba(255, 255, 255, 0.02)',
         display: 'flex',
         flexDirection: 'column' as const,
         alignItems: 'center',
@@ -29,11 +29,13 @@ export function TrashDropZone() {
                 name="delete"
                 size="medium"
                 color={isOver && active ? 'notification-error' : 'contrast-low'}
+                theme="dark"
             />
             <PText
                 size="small"
                 weight="semi-bold"
                 color={isOver && active ? 'notification-error' : 'contrast-low'}
+                theme="dark"
             >
                 {isOver && active ? 'Release to Delete' : 'Drag here to delete'}
             </PText>

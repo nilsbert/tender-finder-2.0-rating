@@ -2,7 +2,7 @@ import React from 'react';
 import { PHeading, PFlex, PText } from '@porsche-design-system/components-react';
 
 interface AdminHeaderProps {
-  activeService: 'crawling' | 'enriching' | 'ai' | 'rating';
+  activeService: 'crawling' | 'enriching' | 'ai' | 'rating' | 'distributing';
 }
 
 const AdminHeader: React.FC<AdminHeaderProps> = ({ activeService }) => {
@@ -11,6 +11,7 @@ const AdminHeader: React.FC<AdminHeaderProps> = ({ activeService }) => {
     { id: 'enriching', name: 'Enriching', port: 8002, path: '/', title: 'Data Intelligence' },
     { id: 'ai', name: 'AI Service', port: 8004, path: '/', title: 'Inference Engine' },
     { id: 'rating', name: 'Rating', port: 8012, path: '/', title: 'Relevancy & Scoring' },
+    { id: 'distributing', name: 'Distributing', port: 3005, path: '/', title: 'Delivery Authority' },
   ];
 
   const currentService = services.find(s => s.id === activeService);

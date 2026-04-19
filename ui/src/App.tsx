@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo, useRef, type FC, type ReactNode } from 'react'
-import AdminHeader from './AdminHeader';
+import AdminHeader from './components/layout/AdminHeader';
 import {
   PButton,
   PTextFieldWrapper,

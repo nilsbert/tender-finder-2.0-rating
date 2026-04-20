@@ -10,6 +10,13 @@
 
 The Rating Microservice provides an autonomous, high-performance **Scoring Engine** that applies the "Company Brain" (Keyword Policy) to incoming tenders. It calculates quantitative relevance scores using weighted keyword matching with location-aware multipliers.
 
+## 📚 Documentation
+- **[Product Vision](./docs/PRODUCT_VISION.md)** - The "Mini Product Version" (Vision, Strategy, Goals)
+- **[Stakeholder Personas](./docs/PERSONAS.md)** - Mapping project personas to prioritization requirements
+- **[Architecture Definition](./docs/ARCHITECTURE.md)** - Technical design, scoring logic & dimensions
+- **[API Documentation](./API.md)** - Endpoint definitions for scoring results
+- **[Domain Logic](./DOMAIN.md)** - Detailed scoring formulas and weighting rules
+
 ## 2. 🤖 Agent Context (CRITICAL)
 
 - **Role**: Scoring Intelligence & Policy Engine.

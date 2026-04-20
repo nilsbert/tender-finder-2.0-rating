@@ -309,7 +309,7 @@ function App() {
 
                 <div style={{ minWidth: '140px' }}>
                   <PSelectWrapper label="Type" theme="dark">
-                    <select value={typeFilter} onChange={e => setTypeFilter(e.target.value)} style={{ height: '40px' }}>
+                    <select value={typeFilter} onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setTypeFilter(e.target.value)} style={{ height: '40px' }}>
                       <option value="">All Types</option>
                       <option value="Service">Service</option>
                       <option value="Sector">Sector</option>
@@ -320,7 +320,7 @@ function App() {
 
                 <div style={{ minWidth: '180px' }}>
                   <PSelectWrapper label="Sub-type" theme="dark">
-                    <select value={subTypeFilter} onChange={e => setSubTypeFilter(e.target.value)} style={{ height: '40px' }}>
+                    <select value={subTypeFilter} onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setSubTypeFilter(e.target.value)} style={{ height: '40px' }}>
                       <option value="">All Sub-types</option>
                       {existingSubTypes.map(cat => (<option key={cat} value={cat}>{cat}</option>))}
                     </select>
@@ -364,7 +364,7 @@ function App() {
                     <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                       <PIcon name={expandedGroups.has(typeGroup.type) ? 'arrow-head-down' : 'arrow-head-right'} theme="dark" />
                       <PHeading size="small" tag="h3" theme="dark">{typeGroup.type}s</PHeading>
-                      <PTag color="background-base" theme="dark">{typeGroup.subtypes.reduce((acc, sub) => acc + sub.keywords.length, 0)}</PTag>
+                      <PTag color="background-base" theme="dark">{typeGroup.subtypes.reduce((acc: number, sub: any) => acc + sub.keywords.length, 0)}</PTag>
                     </div>
                   </div>
 
@@ -390,7 +390,7 @@ function App() {
 
                           {expandedGroups.has(`${typeGroup.type}-${subTypeGroup.name}`) && (
                             <div style={{ padding: '0 48px 8px 64px' }}>
-                              {subTypeGroup.keywords.map(k => (
+                              {subTypeGroup.keywords.map((k: Keyword) => (
                                 <DraggableKeyword key={k.id} keyword={k} onEdit={handleEdit} />
                               ))}
                               {subTypeGroup.keywords.length === 0 && (

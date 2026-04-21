@@ -2,9 +2,7 @@ import axios from 'axios';
 
 // The new orchestrator uses /ms/rating/ as base path for the UI.
 // API calls should be relative to that or stick to the /api prefix.
-const BASE_URL = typeof window !== 'undefined' ? window.location.origin : 'http://127.0.0.1:8012';
-// In the new service, the prefix is /api directly on the app
-const API_URL = `${BASE_URL}/api`; 
+const API_URL = 'api';
 
 export interface Keyword {
     id: string

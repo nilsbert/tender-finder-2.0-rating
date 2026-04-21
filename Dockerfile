@@ -1,8 +1,9 @@
+# Python Backend
 FROM python:3.11-slim-bullseye
 
 WORKDIR /app
 
-# Install system dependencies for MSSQL
+# Install system dependencies
 RUN apt-get update && apt-get install -y --no-install-recommends \
     curl gnupg2 ca-certificates unixodbc-dev g++ \
     && curl -sSL https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor -o /usr/share/keyrings/microsoft-prod.gpg \
@@ -15,7 +16,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy the entire service
+# Copy the entire service (including pre-built ui/dist)
 COPY . .
 
 # Ensure the module is discoverable

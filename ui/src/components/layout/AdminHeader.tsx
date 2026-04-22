@@ -2,16 +2,17 @@ import React from 'react';
 import { PHeading, PFlex, PText } from '@porsche-design-system/components-react';
 
 interface AdminHeaderProps {
-  activeService: 'crawling' | 'enriching' | 'ai' | 'rating' | 'distributing';
+  activeService: 'crawling' | 'enriching' | 'ai' | 'iam' | 'rating' | 'distributing';
 }
 
 const AdminHeader: React.FC<AdminHeaderProps> = ({ activeService }) => {
   const services = [
-    { id: 'crawling', name: 'Crawling', port: 8001, path: '/admin', title: 'Data Collection' },
-    { id: 'enriching', name: 'Enriching', port: 8002, path: '/', title: 'Data Intelligence' },
-    { id: 'ai', name: 'AI Service', port: 8004, path: '/', title: 'Inference Engine' },
-    { id: 'rating', name: 'Rating', port: 8012, path: '/', title: 'Relevancy & Scoring' },
-    { id: 'distributing', name: 'Distributing', port: 3005, path: '/', title: 'Delivery Authority' },
+    { id: 'crawling', name: 'Crawling', port: 8001, path: '/ms/crawling/', title: 'Data Collection' },
+    { id: 'enriching', name: 'Enriching', port: 8002, path: '/ms/enriching/', title: 'Data Intelligence' },
+    { id: 'ai', name: 'AI Service', port: 8004, path: '/ms/ai/', title: 'Inference Engine' },
+    { id: 'iam', name: 'IAM', port: 8003, path: '/ms/iam/admin', title: 'Identity Authority' },
+    { id: 'rating', name: 'Rating', port: 8012, path: '/ms/rating/', title: 'Relevancy & Scoring' },
+    { id: 'distributing', name: 'Distributing', port: 8005, path: '/ms/distribution/', title: 'Delivery Authority' },
   ];
 
   const currentService = services.find(s => s.id === activeService);
@@ -48,7 +49,7 @@ const AdminHeader: React.FC<AdminHeaderProps> = ({ activeService }) => {
           {services.map((s) => {
             const isActive = s.id === activeService;
             const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-            const url = isLocal ? `http://localhost:${s.port}${s.path}` : `../${s.id}/`;
+            const url = isLocal ? `http://localhost:${s.port}${s.id === 'crawling' ? '/admin' : (s.id === 'iam' ? '/admin' : '/')}` : s.path;
             
             return (
               <a

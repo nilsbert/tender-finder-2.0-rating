@@ -10,8 +10,15 @@
 
 The Rating Microservice provides an autonomous, high-performance **Scoring Engine** that applies the "Company Brain" (Keyword Policy) to incoming tenders. It calculates quantitative relevance scores using weighted keyword matching with location-aware multipliers.
 
+
+## 📚 Project Foundation
+This microservice is part of the Tender Finder 2.0 ecosystem. To ensure architectural sovereignty and consistency, please refer to the following central documentation in the orchestrator repository:
+- **[Product Vision](https://github.com/nilsbert/tender-finder-2.0-orchestrator/blob/main/docs/PRODUCT_VISION.md)**
+- **[Architecture Standards](https://github.com/nilsbert/tender-finder-2.0-orchestrator/blob/main/docs/ARCHITECTURE_STANDARDS.md)**
+- **[Style Guide](https://github.com/nilsbert/tender-finder-2.0-orchestrator/blob/main/docs/STYLE_GUIDE.md)**
+- **[Domain Glossary](https://github.com/nilsbert/tender-finder-2.0-orchestrator/blob/main/docs/DOMAIN_GLOSSARY.md)**
 ## 📚 Documentation
-- **[Product Vision](./docs/PRODUCT_VISION.md)** - The "Mini Product Version" (Vision, Strategy, Goals)
+- **[Product Vision](https://github.com/nilsbert/tender-finder-2.0-orchestrator/blob/main/docs/PRODUCT_VISION.md)** - Overarching ecosystem strategy
 - **[Stakeholder Personas](./docs/PERSONAS.md)** - Mapping project personas to prioritization requirements
 - **[Architecture Definition](./docs/ARCHITECTURE.md)** - Technical design, scoring logic & dimensions
 - **[API Documentation](./API.md)** - Endpoint definitions for scoring results

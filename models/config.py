@@ -1,6 +1,6 @@
 from sqlalchemy import String, Integer, DateTime
 from sqlalchemy.orm import Mapped, mapped_column
-from datetime import datetime
+from datetime import datetime, timezone
 from .database import Base
 
 class ConfigRatingORM(Base):
@@ -12,7 +12,7 @@ class ConfigRatingORM(Base):
     title_score_threshold: Mapped[int] = mapped_column(Integer, default=50)
     
     version: Mapped[int] = mapped_column(Integer, default=1)
-    updated_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    updated_at: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(timezone.utc), onupdate=datetime.utcnow)
 
 class ConfigRatingHistoryORM(Base):
     """Audit trail for rating configuration changes"""
@@ -24,5 +24,5 @@ class ConfigRatingHistoryORM(Base):
     
     version: Mapped[int] = mapped_column(Integer)
     change_summary: Mapped[str] = mapped_column(String(500), nullable=False)
-    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(timezone.utc))
     created_by: Mapped[str] = mapped_column(String(100), default="Alex (Admin)")

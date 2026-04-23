@@ -48,8 +48,7 @@ const AdminHeader: React.FC<AdminHeaderProps> = ({ activeService }) => {
         <nav style={{ display: 'flex', gap: '8px', marginLeft: '24px' }}>
           {services.map((s) => {
             const isActive = s.id === activeService;
-            const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-            const url = isLocal ? `http://localhost:${s.port}${s.id === 'crawling' ? '/admin' : (s.id === 'iam' ? '/admin' : '/')}` : s.path;
+            const url = s.path;
             
             return (
               <a

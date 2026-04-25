@@ -1,20 +1,21 @@
+
 import pytest
-from httpx import AsyncClient
 import yaml
-import json
+from httpx import AsyncClient
+
 
 @pytest.mark.asyncio
 async def test_keyword_export_import_flow(client: AsyncClient):
     """Scenario: Import/Export Lifecycle and Dry Run"""
-    
+
     # 1. Export initial (should have seeded keywords)
     resp = await client.get("/api/keywords/export")
     assert resp.status_code == 200
     assert "application/x-yaml" in resp.headers["content-type"]
-    
+
     # 2. Add a new keyword via direct post
     await client.post("/api/keywords", json={"term": "ImportTest", "weight": 9.9, "type": "Service"})
-    
+
     # 3. Export again and verify new keyword
     resp = await client.get("/api/keywords/export")
     data = yaml.safe_load(resp.text)
@@ -29,10 +30,10 @@ async def test_keyword_export_import_flow(client: AsyncClient):
         ]
     }
     yaml_bytes = yaml.dump(import_data).encode("utf-8")
-    
+
     # 5. Dry Run Import
     resp = await client.post(
-        "/api/keywords/import?dry_run=True", 
+        "/api/keywords/import?dry_run=True",
         files={"file": ("test.yaml", yaml_bytes, "application/x-yaml")}
     )
     assert resp.status_code == 200
@@ -43,11 +44,11 @@ async def test_keyword_export_import_flow(client: AsyncClient):
 
     # 6. Real Import (Sync)
     resp = await client.post(
-        "/api/keywords/import?dry_run=False", 
+        "/api/keywords/import?dry_run=False",
         files={"file": ("test.yaml", yaml_bytes, "application/x-yaml")}
     )
     assert resp.status_code == 200
-    
+
     # 7. Verify Changes
     resp = await client.get("/api/keywords")
     keywords = resp.json()
@@ -59,14 +60,14 @@ async def test_keyword_export_import_flow(client: AsyncClient):
 async def test_rate_batch_endpoint(client: AsyncClient):
     """Scenario: Batch rating of multiple tenders"""
     await client.post("/api/keywords", json={"term": "AI", "weight": 2.0, "type": "Service"})
-    
+
     batch_data = {
         "tenders": [
             {"id": "B1", "title": "AI Project", "description": "Desc"},
             {"id": "B2", "title": "Non Related", "description": "Cloud"}
         ]
     }
-    
+
     resp = await client.post("/api/rate-batch", json=batch_data)
     assert resp.status_code == 200
     data = resp.json()
@@ -81,11 +82,11 @@ async def test_error_paths(client: AsyncClient):
     # 1. Update non-existent keyword
     resp = await client.put("/api/keywords/non-existent-id", json={"term": "X", "weight": 1.0, "type": "Service"})
     assert resp.status_code == 404
-    
+
     # 2. Malformed Import (Invalid JSON/YAML)
     bad_bytes = b"not a yaml: ["
     resp = await client.post(
-        "/api/keywords/import?dry_run=False", 
+        "/api/keywords/import?dry_run=False",
         files={"file": ("bad.yaml", bad_bytes, "application/x-yaml")}
     )
     assert resp.status_code == 400 or resp.status_code == 422 # Depends on how it fails
@@ -95,11 +96,11 @@ async def test_error_paths(client: AsyncClient):
 async def test_keyword_tree_and_categories(client: AsyncClient):
     """Scenario: Metadata exploration"""
     await client.post("/api/keywords", json={"term": "X", "weight": 1.0, "type": "Service", "sub_type": "SubX"})
-    
+
     resp = await client.get("/api/keywords/categories")
     assert resp.status_code == 200
     assert "SubX" in resp.json()
-    
+
     resp = await client.get("/api/keywords/tree")
     assert resp.status_code == 200
     tree = resp.json()

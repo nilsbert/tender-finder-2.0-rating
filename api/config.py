@@ -1,11 +1,12 @@
-from fastapi import APIRouter, Depends, HTTPException
-from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select
-from typing import List, Dict, Any
-from core.database import db
-from models.orm import ConfigRatingORM, ConfigRatingHistoryORM
-from pydantic import BaseModel
 from datetime import datetime
+from typing import Any
+
+from core.database import db
+from fastapi import APIRouter, Depends, HTTPException
+from models.orm import ConfigRatingHistoryORM, ConfigRatingORM
+from pydantic import BaseModel
+from sqlalchemy import select
+from sqlalchemy.ext.asyncio import AsyncSession
 
 router = APIRouter(prefix="/config", tags=["Configuration"])
 
@@ -24,7 +25,7 @@ class ConfigUpdate(BaseModel):
     change_summary: str
     created_by: str = "Admin"
 
-def orm_to_dict(obj) -> Dict[str, Any]:
+def orm_to_dict(obj) -> dict[str, Any]:
     """Extract data fields from ORM."""
     data = {}
     for column in obj.__table__.columns:
@@ -48,7 +49,7 @@ async def update_rating_config(payload: ConfigUpdate, session: AsyncSession = De
     obj = result.scalar_one_or_none()
     if not obj:
         raise HTTPException(status_code=404, detail="Rating config not initialized")
-    
+
     # Historize
     history = ConfigRatingHistoryORM(
         version=obj.version,
@@ -57,12 +58,12 @@ async def update_rating_config(payload: ConfigUpdate, session: AsyncSession = De
         **orm_to_dict(obj)
     )
     session.add(history)
-    
+
     # Update
     for key, value in payload.model_dump().items():
         if key not in ["change_summary", "created_by"] and hasattr(obj, key):
             setattr(obj, key, value)
-            
+
     obj.version += 1
     await session.commit()
     await session.refresh(obj)

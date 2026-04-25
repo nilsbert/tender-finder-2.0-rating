@@ -1,30 +1,31 @@
-from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select, delete, text
-from models.orm import KeywordORM
-from typing import List, Optional, Dict
 import uuid
+
+from models.orm import KeywordORM
+from sqlalchemy import delete, select, text
+from sqlalchemy.ext.asyncio import AsyncSession
+
 
 class RatingRepository:
     def __init__(self, session: AsyncSession):
         self.session = session
 
-    async def get_all_keywords(self) -> List[KeywordORM]:
+    async def get_all_keywords(self) -> list[KeywordORM]:
         result = await self.session.execute(select(KeywordORM))
         return list(result.scalars().all())
 
-    async def get_keyword_by_term(self, term: str) -> Optional[KeywordORM]:
+    async def get_keyword_by_term(self, term: str) -> KeywordORM | None:
         result = await self.session.execute(select(KeywordORM).where(KeywordORM.term == term))
         return result.scalars().first()
 
-    async def get_keyword_by_id(self, keyword_id: str) -> Optional[KeywordORM]:
+    async def get_keyword_by_id(self, keyword_id: str) -> KeywordORM | None:
         result = await self.session.execute(select(KeywordORM).where(KeywordORM.id == keyword_id))
         return result.scalar_one_or_none()
 
-    async def add_keyword(self, term: str, weight: float, type: str, 
-                           category: Optional[str] = None, 
-                           sub_type: Optional[str] = None, 
-                           sub_category: Optional[str] = None,
-                           id: Optional[str] = None) -> KeywordORM:
+    async def add_keyword(self, term: str, weight: float, type: str,
+                           category: str | None = None,
+                           sub_type: str | None = None,
+                           sub_category: str | None = None,
+                           id: str | None = None) -> KeywordORM:
         keyword = KeywordORM(
             id=id or str(uuid.uuid4()),
             term=term,
@@ -42,7 +43,7 @@ class RatingRepository:
         await self.session.execute(delete(KeywordORM).where(KeywordORM.id == keyword_id))
         await self.session.flush()
 
-    async def update_keyword(self, keyword_id: str, **kwargs) -> Optional[KeywordORM]:
+    async def update_keyword(self, keyword_id: str, **kwargs) -> KeywordORM | None:
         keyword = await self.get_keyword_by_id(keyword_id)
         if keyword:
             for key, value in kwargs.items():
@@ -51,12 +52,12 @@ class RatingRepository:
             await self.session.flush()
         return keyword
 
-    async def get_categories(self) -> List[str]:
+    async def get_categories(self) -> list[str]:
         stmt = text("SELECT DISTINCT sub_type FROM keywords WHERE sub_type IS NOT NULL")
         result = await self.session.execute(stmt)
         return [row[0] for row in result.all()]
 
-    async def get_keyword_tree(self) -> Dict[str, List[str]]:
+    async def get_keyword_tree(self) -> dict[str, list[str]]:
         orms = await self.get_all_keywords()
         tree = {}
         for kw in orms:
@@ -66,6 +67,6 @@ class RatingRepository:
                 tree[kw_type] = set()
             tree[kw_type].add(sub_type)
         return {
-            type_name: sorted(list(subtypes))
+            type_name: sorted(subtypes)
             for type_name, subtypes in tree.items()
         }

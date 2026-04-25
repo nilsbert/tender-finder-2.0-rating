@@ -1,16 +1,31 @@
-from fastapi import APIRouter, HTTPException, Depends, UploadFile, File, Query, Response, status
-from typing import List, Optional
 import json
-import yaml
-from sqlalchemy.ext.asyncio import AsyncSession
 
+import yaml
 from core.database import db
 from core.repository import RatingRepository
 from core.service import rating_engine
-from models.schemas import (
-    TenderInput, RatingResult, RatingBatchRequest, RatingBatchResponse, 
-    Keyword, KeywordCreate, KeywordYamlModel, KeywordImportResult, KeywordImportSummary
+from fastapi import (
+    APIRouter,
+    Depends,
+    File,
+    HTTPException,
+    Query,
+    Response,
+    UploadFile,
+    status,
 )
+from models.schemas import (
+    Keyword,
+    KeywordCreate,
+    KeywordImportResult,
+    KeywordImportSummary,
+    KeywordYamlModel,
+    RatingBatchRequest,
+    RatingBatchResponse,
+    RatingResult,
+    TenderInput,
+)
+from sqlalchemy.ext.asyncio import AsyncSession
 
 router = APIRouter(prefix="/api", tags=["rating"])
 
@@ -30,7 +45,7 @@ async def rate_single_tender(tender: TenderInput, repo: RatingRepository = Depen
     async with repo.session.begin():
         # Fetch keywords from repo for the engine
         db_keywords = await repo.get_all_keywords()
-        
+
         # Map ORM to Schema for the engine
         keywords = [
             Keyword(
@@ -44,7 +59,7 @@ async def rate_single_tender(tender: TenderInput, repo: RatingRepository = Depen
                 created_at=k.created_at
             ) for k in db_keywords
         ]
-        
+
         return rating_engine.rate_single(tender, keywords)
 
 @router.post("/rate-batch", response_model=RatingBatchResponse, dependencies=[Depends(db.get_session)])
@@ -61,14 +76,14 @@ async def rate_tenders_batch(request: RatingBatchRequest, repo: RatingRepository
 
 # --- Keyword Management Endpoints ---
 
-@router.get("/keywords", response_model=List[Keyword])
+@router.get("/keywords", response_model=list[Keyword])
 async def list_keywords(repo: RatingRepository = Depends(get_repository)):
     """Retrieve all keywords."""
     async with repo.session.begin():
         orms = await repo.get_all_keywords()
         return [Keyword.model_validate(o, from_attributes=True) for o in orms]
 
-@router.get("/keywords/categories", response_model=List[str])
+@router.get("/keywords/categories", response_model=list[str])
 async def list_categories(repo: RatingRepository = Depends(get_repository)):
     """Retrieve all unique keyword sub-types/categories."""
     async with repo.session.begin():
@@ -87,7 +102,7 @@ async def create_keyword(kw: KeywordCreate, repo: RatingRepository = Depends(get
         existing = await repo.get_keyword_by_term(kw.term)
         if existing:
             raise HTTPException(status_code=409, detail=f"Keyword '{kw.term}' already exists.")
-            
+
         orm = await repo.add_keyword(**kw.model_dump())
         await repo.session.flush()
         return Keyword.model_validate(orm, from_attributes=True)
@@ -115,7 +130,7 @@ async def export_keywords_yaml(repo: RatingRepository = Depends(get_repository))
     """Download all keywords as a YAML file."""
     async with repo.session.begin():
         orms = await repo.get_all_keywords()
-        
+
         export_data = {
             "keywords": [
                 {
@@ -129,9 +144,9 @@ async def export_keywords_yaml(repo: RatingRepository = Depends(get_repository))
                 for k in orms
             ]
         }
-        
+
         yaml_str = yaml.dump(export_data, sort_keys=False, allow_unicode=True)
-        
+
         return Response(
             content=yaml_str,
             media_type="application/x-yaml",
@@ -153,43 +168,43 @@ async def import_keywords_file(
         content = await file.read()
         data = yaml.safe_load(content) if not file.filename.endswith(".json") else json.loads(content)
         parsed = KeywordYamlModel(**data)
-        
+
         uploaded_keywords = parsed.keywords
-        
+
         async with repo.session.begin():
             current_orms = await repo.get_all_keywords()
             current_map = {k.term.lower(): k for k in current_orms}
-            
-            created, updated, deleted = [], [], []
-            
+
+            created, updated, _deleted = [], [], []
+
             for up_kw in uploaded_keywords:
                 term_key = up_kw.term.lower()
                 if term_key not in current_map:
                     created.append(up_kw)
                 else:
                     existing = current_map[term_key]
-                    if (existing.weight != up_kw.weight or existing.type != up_kw.type or 
+                    if (existing.weight != up_kw.weight or existing.type != up_kw.type or
                         existing.sub_type != up_kw.sub_type or existing.category != up_kw.category):
                         updated.append(up_kw)
-            
+
             summary = KeywordImportSummary(created=created, updated=updated, deleted=[], total_count=len(uploaded_keywords))
-            
+
             if dry_run:
                 return KeywordImportResult(summary=summary, dry_run=True, success=True, message="Dry run successful.")
-                
+
             uploaded_terms = {k.term.lower() for k in uploaded_keywords}
             if delete_missing:
                 for curr_kw in current_orms:
                     if curr_kw.term.lower() not in uploaded_terms:
                         await repo.delete_keyword(curr_kw.id)
-            
+
             for c in created: await repo.add_keyword(**c.model_dump())
             for u in updated:
                 existing = current_map[u.term.lower()]
                 await repo.update_keyword(existing.id, **u.model_dump())
-                
+
             return KeywordImportResult(summary=summary, dry_run=False, success=True, message="Import successful.")
-        
+
     except Exception as e:
         import traceback
         traceback.print_exc()

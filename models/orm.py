@@ -1,12 +1,13 @@
 from sqlalchemy.orm import declarative_base
-Base = declarative_base()
-from datetime import datetime
-from typing import Optional
-import uuid
 
-from sqlalchemy import String, Float, DateTime, Integer
+Base = declarative_base()
+import uuid
+from datetime import datetime
+
+from sqlalchemy import DateTime, Float, Integer, String
 from sqlalchemy.orm import Mapped, mapped_column
 from sqlalchemy.sql import func
+
 
 class KeywordORM(Base):
     """
@@ -19,9 +20,9 @@ class KeywordORM(Base):
     term: Mapped[str] = mapped_column(String(255), index=True, nullable=False)
     weight: Mapped[float] = mapped_column(Float, nullable=False, default=1.0)
     type: Mapped[str] = mapped_column(String(50), nullable=False, default="Sector") # Sector, Service, Exclusion
-    sub_type: Mapped[Optional[str]] = mapped_column(String(100), nullable=True)
-    sub_category: Mapped[Optional[str]] = mapped_column(String(100), nullable=True)
-    category: Mapped[Optional[str]] = mapped_column(String(100), nullable=True, default="Uncategorized")
+    sub_type: Mapped[str | None] = mapped_column(String(100), nullable=True)
+    sub_category: Mapped[str | None] = mapped_column(String(100), nullable=True)
+    category: Mapped[str | None] = mapped_column(String(100), nullable=True, default="Uncategorized")
     created_at: Mapped[datetime] = mapped_column(DateTime, default=func.now())
 
 class ConfigORM(Base):
@@ -39,7 +40,7 @@ class ConfigRatingORM(Base):
     id: Mapped[int] = mapped_column(Integer, primary_key=True, default=1)
     overall_score_threshold: Mapped[int] = mapped_column(Integer, default=70)
     title_score_threshold: Mapped[int] = mapped_column(Integer, default=50)
-    
+
     version: Mapped[int] = mapped_column(Integer, default=1)
     updated_at: Mapped[datetime] = mapped_column(DateTime, default=func.now(), onupdate=func.now())
 
@@ -50,7 +51,7 @@ class ConfigRatingHistoryORM(Base):
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     overall_score_threshold: Mapped[int] = mapped_column(Integer)
     title_score_threshold: Mapped[int] = mapped_column(Integer)
-    
+
     version: Mapped[int] = mapped_column(Integer)
     change_summary: Mapped[str] = mapped_column(String(500), nullable=False)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=func.now())

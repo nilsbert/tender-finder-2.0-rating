@@ -12,7 +12,7 @@ const AdminHeader: React.FC<AdminHeaderProps> = ({ activeService }) => {
     { id: 'ai', name: 'AI Service', port: 8004, path: '/ms/ai/', title: 'Inference Engine' },
     { id: 'iam', name: 'IAM', port: 8003, path: '/ms/iam/admin', title: 'Identity Authority' },
     { id: 'rating', name: 'Rating', port: 8012, path: '/ms/rating/', title: 'Relevancy & Scoring' },
-    { id: 'distributing', name: 'Distributing', port: 8005, path: '/ms/distribution/', title: 'Delivery Authority' },
+    { id: 'distributing', name: 'Distributing', port: 8005, path: '/ms/dispatching/', title: 'Delivery Authority' },
   ];
 
   const currentService = services.find(s => s.id === activeService);

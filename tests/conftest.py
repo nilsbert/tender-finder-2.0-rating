@@ -1,12 +1,13 @@
+import asyncio
+import os
+
 import pytest
 import pytest_asyncio
-import os
-import asyncio
-from httpx import AsyncClient, ASGITransport
-from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession, async_sessionmaker
-from main import app
 from core.database import db
+from httpx import ASGITransport, AsyncClient
+from main import app
 from models.orm import Base, KeywordORM
+from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 
 # Use a test database
 TEST_DB_URL = "sqlite+aiosqlite:///./test_rating.db"
@@ -45,19 +46,19 @@ async def client(session, test_engine):
     # USE CLEAN DEPENDENCY OVERRIDES instead of monkeypatching where possible
     async def override_get_session():
         yield session
-        
+
     app.dependency_overrides[db.get_session] = override_get_session
-    
+
     # ALSO override the singleton's engine and factory to ensure non-DI methods use test DB
     original_engine = db.engine
     original_factory = db.session_factory
-    
+
     db.engine = test_engine
     db.session_factory = async_sessionmaker(test_engine, expire_on_commit=False)
-    
+
     async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as ac:
         yield ac
-        
+
     app.dependency_overrides.clear()
     db.engine = original_engine
     db.session_factory = original_factory

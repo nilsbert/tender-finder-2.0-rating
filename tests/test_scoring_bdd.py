@@ -1,6 +1,7 @@
 import pytest
 from httpx import AsyncClient
 
+
 @pytest.mark.asyncio
 async def test_standard_relevancy_score(client: AsyncClient):
     """
@@ -12,7 +13,7 @@ async def test_standard_relevancy_score(client: AsyncClient):
     # 1. Setup Keywords
     await client.post("/api/keywords", json={"term": "AI", "weight": 2.0, "type": "Service"})
     await client.post("/api/keywords", json={"term": "Cloud", "weight": 1.5, "type": "Service"})
-    
+
     # 2. Request Rating
     tender_data = {
         "id": "T-101",
@@ -20,12 +21,12 @@ async def test_standard_relevancy_score(client: AsyncClient):
         "description": "Cloud based AI project in aerospace.",
         "full_text": ""
     }
-    
+
     response = await client.post("/api/rate", json=tender_data)
     assert response.status_code == 200
-    
+
     data = response.data if hasattr(response, 'data') else response.json()
-    
+
     # Calculation:
     # Title: "AI" (2.0) * 5.0 multiplier = 10.0
     # Description: "Cloud" (1.5) * 3.0 = 4.5, "AI" (2.0) * 3.0 = 6.0
@@ -43,17 +44,17 @@ async def test_exclusion_logic_precedence(client: AsyncClient):
     - Then score should be negative/reduced
     """
     await client.post("/api/keywords", json={"term": "Catering", "weight": -5.0, "type": "Exclusion"})
-    
+
     tender_data = {
         "id": "T-102",
         "title": "IT Services",
         "description": "Includes Catering and more.",
     }
-    
+
     response = await client.post("/api/rate", json=tender_data)
     assert response.status_code == 200
     data = response.json()
-    
+
     # "Catering" (-5.0) * 3.0 multiplier = -15.0
     assert data["score"] == -15.0
     assert data["matched_keywords"][0]["term"] == "Catering"
@@ -62,7 +63,7 @@ async def test_exclusion_logic_precedence(client: AsyncClient):
 async def test_case_insensitive_matching(client: AsyncClient):
     """Scenario: Case-Insensitive Matching"""
     await client.post("/api/keywords", json={"term": "AI", "weight": 2.0, "type": "Service"})
-    
+
     response = await client.post("/api/rate", json={
         "id": "T-103", "title": "ai research", "description": ""
     })
@@ -72,7 +73,7 @@ async def test_case_insensitive_matching(client: AsyncClient):
 async def test_no_double_counting_in_same_location(client: AsyncClient):
     """Scenario: Multiple hits of same keyword in same field only count once"""
     await client.post("/api/keywords", json={"term": "Cloud", "weight": 2.0, "type": "Service"})
-    
+
     response = await client.post("/api/rate", json={
         "id": "T-104", "title": "Cloud Cloud", "description": "Cloud Cloud Cloud"
     })

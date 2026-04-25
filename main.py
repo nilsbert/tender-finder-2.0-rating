@@ -1,42 +1,44 @@
-from core.database import db
-import os
 import logging
-from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
+import os
 from contextlib import asynccontextmanager
-from dotenv import load_dotenv
+
+from api.config import router as config_router
+from api.routes import router as rating_router
+from core.database import db
 from core.initial_data import get_initial_keywords
 from core.repository import RatingRepository
-from fastapi.staticfiles import StaticFiles
+from dotenv import load_dotenv
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
+from fastapi.staticfiles import StaticFiles
 
 # Load env
 load_dotenv()
 logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
+logger = logging.getLogger("rating-ms")
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # Initialize DB (Schema/Tables)
     await db.init_db()
-    
+
     # Seeding Logic via Repository
-    async with db.session_factory() as session:
-        async with session.begin():
-            repo = RatingRepository(session)
-            keywords = await repo.get_all_keywords()
-            if not keywords:
-                logger.info("Database empty. Seeding initial keywords...")
-                initial_data = get_initial_keywords()
-                for kw in initial_data:
-                    try:
-                        # Safely pass only available attributes
-                        kw_dict = kw.model_dump()
-                        await repo.add_keyword(**kw_dict)
-                    except Exception as e:
-                        logger.error(f"Failed to seed keyword {kw.term}: {e}")
-                logger.info(f"Seeded {len(initial_data)} keywords.")
-        
+    async with db.session_factory() as session, session.begin():
+        repo = RatingRepository(session)
+        keywords = await repo.get_all_keywords()
+        if not keywords:
+            logger.info("Database empty. Seeding initial keywords...")
+            initial_data = get_initial_keywords()
+            for kw in initial_data:
+                try:
+                    # Safely pass only available attributes
+                    kw_dict = kw.model_dump()
+                    await repo.add_keyword(**kw_dict)
+                except Exception as e:
+                    logger.error(f"Failed to seed keyword {kw.term}: {e}")
+            logger.info(f"Seeded {len(initial_data)} keywords.")
+
     logger.info("Rating Service starting up...")
     yield
     logger.info("Rating Service shutting down...")
@@ -50,9 +52,13 @@ app = FastAPI(
     openapi_url="/api/openapi.json"
 )
 
-# API Routes
-from api.routes import router as rating_router
-from api.config import router as config_router
+@app.middleware("http")
+async def log_requests(request, call_next):
+    logger.info(f"🔍 Request: {request.method} {request.url}")
+    response = await call_next(request)
+    logger.info(f"🔄 Response: {response.status_code}")
+    return response
+
 app.include_router(rating_router)
 app.include_router(config_router, prefix="/api/v1")
 
@@ -82,7 +88,7 @@ if os.path.exists(ui_dist_path):
     @app.get("/")
     async def root_redirect():
         return FileResponse(os.path.join(ui_dist_path, "index.html"))
-    
+
     app.mount("/", StaticFiles(directory=ui_dist_path, html=True), name="ui")
 else:
     @app.get("/")

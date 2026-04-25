@@ -1,7 +1,10 @@
-from sqlalchemy import String, Integer, DateTime
-from sqlalchemy.orm import Mapped, mapped_column
 from datetime import datetime, timezone
+
+from sqlalchemy import DateTime, Integer, String
+from sqlalchemy.orm import Mapped, mapped_column
+
 from .database import Base
+
 
 class ConfigRatingORM(Base):
     """Current Rating engine configuration"""
@@ -10,7 +13,7 @@ class ConfigRatingORM(Base):
     id: Mapped[int] = mapped_column(Integer, primary_key=True, default=1)
     overall_score_threshold: Mapped[int] = mapped_column(Integer, default=70)
     title_score_threshold: Mapped[int] = mapped_column(Integer, default=50)
-    
+
     version: Mapped[int] = mapped_column(Integer, default=1)
     updated_at: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(timezone.utc), onupdate=datetime.utcnow)
 
@@ -21,7 +24,7 @@ class ConfigRatingHistoryORM(Base):
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     overall_score_threshold: Mapped[int] = mapped_column(Integer)
     title_score_threshold: Mapped[int] = mapped_column(Integer)
-    
+
     version: Mapped[int] = mapped_column(Integer)
     change_summary: Mapped[str] = mapped_column(String(500), nullable=False)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(timezone.utc))

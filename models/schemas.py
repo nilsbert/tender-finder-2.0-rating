@@ -1,16 +1,17 @@
-from pydantic import BaseModel, Field, ConfigDict
-from typing import Optional, List
-from datetime import datetime, timezone
 import uuid
+from datetime import datetime
+
+from pydantic import BaseModel, ConfigDict, Field
+
 
 class KeywordBase(BaseModel):
     model_config = ConfigDict(from_attributes=True)
     term: str
     weight: float = 1.0
     type: str = "Sector"
-    sub_type: Optional[str] = None
-    sub_category: Optional[str] = None
-    category: Optional[str] = "Uncategorized"
+    sub_type: str | None = None
+    sub_category: str | None = None
+    category: str | None = "Uncategorized"
 
 class KeywordCreate(KeywordBase):
     pass
@@ -22,10 +23,10 @@ class Keyword(KeywordBase):
 class TenderInput(BaseModel):
     """Stateless input for rating"""
     id: str
-    title: Optional[str] = None
-    description: Optional[str] = None
-    full_text: Optional[str] = None
-    cpv_codes: List[str] = []
+    title: str | None = None
+    description: str | None = None
+    full_text: str | None = None
+    cpv_codes: list[str] = []
 
 class RatedKeyword(BaseModel):
     term: str
@@ -35,23 +36,23 @@ class RatedKeyword(BaseModel):
 class RatingResult(BaseModel):
     tender_id: str
     score: float
-    matched_keywords: List[RatedKeyword]
+    matched_keywords: list[RatedKeyword]
     metadata: dict = {}
 
 class RatingBatchRequest(BaseModel):
-    tenders: List[TenderInput]
+    tenders: list[TenderInput]
 
 class RatingBatchResponse(BaseModel):
-    results: List[RatingResult]
+    results: list[RatingResult]
 
 # --- Import / Export ---
 class KeywordYamlModel(BaseModel):
-    keywords: List[KeywordCreate]
+    keywords: list[KeywordCreate]
 
 class KeywordImportSummary(BaseModel):
-    created: List[KeywordCreate]
-    updated: List[KeywordCreate]
-    deleted: List[Keyword]
+    created: list[KeywordCreate]
+    updated: list[KeywordCreate]
+    deleted: list[Keyword]
     total_count: int
 
 class KeywordImportResult(BaseModel):

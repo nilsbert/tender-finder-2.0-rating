@@ -1,12 +1,13 @@
-from typing import List
+
 from models.schemas import KeywordCreate
 
-def get_initial_keywords() -> List[KeywordCreate]:
+
+def get_initial_keywords() -> list[KeywordCreate]:
     """
     Returns a list of 100+ domain-specific keywords for MHP Management- und IT-Beratung.
     Demonstrates 3-level hierarchy: Type -> Sub-type -> Sub-category
     """
-    
+
     # 1. SECTORS (BRANCHEN)
     sectors = [
         ('AI', 2.0, 'Aerospace & Defense', 'Automation', 'Aerospace & Defense'),
@@ -489,14 +490,14 @@ def get_initial_keywords() -> List[KeywordCreate]:
     ]
 
     initial_keywords = []
-    
+
     # Process Sectors
     for term, weight, subtype, subcat2, category in sectors:
         initial_keywords.append(KeywordCreate(
-            term=term, 
-            weight=weight, 
-            category=category, 
-            type="Sector", 
+            term=term,
+            weight=weight,
+            category=category,
+            type="Sector",
             sub_type=subtype,
             sub_category=subcat2
         ))
@@ -504,21 +505,21 @@ def get_initial_keywords() -> List[KeywordCreate]:
     # Process Services
     for term, weight, subtype, subcat in services:
         initial_keywords.append(KeywordCreate(
-            term=term, 
-            weight=weight, 
+            term=term,
+            weight=weight,
             category=subtype,
-            type="Service", 
+            type="Service",
             sub_type=subtype,
             sub_category=subcat
         ))
-        
+
     # Process Exclusions
     for term, weight, subtype, type_, subcat in exclusions:
          initial_keywords.append(KeywordCreate(
-            term=term, 
-            weight=weight, 
+            term=term,
+            weight=weight,
             category=subtype,
-            type="Exclusion", 
+            type="Exclusion",
             sub_type=subtype,
             sub_category=subcat
         ))

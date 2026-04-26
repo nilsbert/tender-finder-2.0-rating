@@ -1,8 +1,7 @@
 import React from 'react';
-import { PHeading, PFlex, PText } from '@porsche-design-system/components-react';
 
 interface AdminHeaderProps {
-  activeService: 'crawling' | 'enriching' | 'ai' | 'iam' | 'rating' | 'distributing';
+  activeService: 'crawling' | 'enriching' | 'ai' | 'rating' | 'distributing';
 }
 
 const AdminHeader: React.FC<AdminHeaderProps> = ({ activeService }) => {
@@ -10,7 +9,6 @@ const AdminHeader: React.FC<AdminHeaderProps> = ({ activeService }) => {
     { id: 'crawling', name: 'Crawling', port: 8001, path: '/ms/crawling/', title: 'Data Collection' },
     { id: 'enriching', name: 'Enriching', port: 8002, path: '/ms/enriching/', title: 'Data Intelligence' },
     { id: 'ai', name: 'AI Service', port: 8004, path: '/ms/ai/', title: 'Inference Engine' },
-    { id: 'iam', name: 'IAM', port: 8003, path: '/ms/iam/admin', title: 'Identity Authority' },
     { id: 'rating', name: 'Rating', port: 8012, path: '/ms/rating/', title: 'Relevancy & Scoring' },
     { id: 'distributing', name: 'Distributing', port: 8005, path: '/ms/distributing/', title: 'Delivery Authority' },
   ];
@@ -33,16 +31,16 @@ const AdminHeader: React.FC<AdminHeaderProps> = ({ activeService }) => {
       width: '100%',
       boxSizing: 'border-box'
     }}>
-      <PFlex alignItems="center" style={{ gap: '24px' }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '24px' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
           <svg viewBox="0 0 32 32" style={{ width: '32px', height: '32px' }}>
             <rect width="32" height="32" rx="8" fill="#d5001c" />
             <path d="M8 16L14 10L20 16L14 22Z" fill="#fff" />
             <path d="M16 13L22 7L28 13L22 19Z" fill="rgba(255,255,255,0.5)" />
           </svg>
-          <PHeading size="small" theme="dark" style={{ margin: 0, letterSpacing: '-0.02em', whiteSpace: 'nowrap' }}>
-            TENDER FINDER <span style={{ fontWeight: 'normal', opacity: 0.5 }}>| {currentService?.title || 'Admin Suite'}</span>
-          </PHeading>
+          <span style={{ margin: 0, letterSpacing: '-0.02em', whiteSpace: 'nowrap', fontWeight: 700, fontSize: '16px', color: '#fff' }}>
+            TENDER FINDER <span style={{ fontWeight: 300, opacity: 0.5 }}>| {currentService?.title || 'Admin Suite'}</span>
+          </span>
         </div>
 
         <nav style={{ display: 'flex', gap: '8px', marginLeft: '24px' }}>
@@ -73,9 +71,9 @@ const AdminHeader: React.FC<AdminHeaderProps> = ({ activeService }) => {
             );
           })}
         </nav>
-      </PFlex>
+      </div>
 
-      <PFlex alignItems="center" style={{ gap: '16px' }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
         <div style={{ 
           display: 'flex', 
           alignItems: 'center', 
@@ -92,9 +90,9 @@ const AdminHeader: React.FC<AdminHeaderProps> = ({ activeService }) => {
             backgroundColor: '#01ba6d',
             boxShadow: '0 0 8px rgba(1, 186, 109, 0.4)'
           }} />
-          <PText size="x-small" theme="dark" style={{ color: '#01ba6d', fontWeight: 'bold', fontSize: '11px' }}>SYSTEM ONLINE</PText>
+          <span style={{ color: '#01ba6d', fontWeight: 'bold', fontSize: '11px', letterSpacing: '0.5px' }}>SYSTEM ONLINE</span>
         </div>
-      </PFlex>
+      </div>
     </header>
   );
 };

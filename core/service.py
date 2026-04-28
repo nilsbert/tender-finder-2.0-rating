@@ -31,9 +31,7 @@ class RatingEngine:
         """
         start_time = time.time()
         scoring_result = ScoringPolicy.calculate_score(
-            tender_title=tender.title,
-            tender_description=tender.description,
-            tender_full_text=tender.full_text or "",
+            tender=tender,
             keywords=keywords
         )
 

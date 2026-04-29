@@ -1,4 +1,6 @@
+from __future__ import annotations
 import uuid
+
 
 from models.orm import KeywordORM
 from sqlalchemy import delete, select, text

@@ -1,3 +1,5 @@
+from __future__ import annotations
+from typing import Optional
 from sqlalchemy.orm import declarative_base
 
 Base = declarative_base()
@@ -20,9 +22,10 @@ class KeywordORM(Base):
     term: Mapped[str] = mapped_column(String(255), index=True, nullable=False)
     weight: Mapped[float] = mapped_column(Float, nullable=False, default=1.0)
     type: Mapped[str] = mapped_column(String(50), nullable=False, default="Sector") # Sector, Service, Exclusion
-    sub_type: Mapped[str | None] = mapped_column(String(100), nullable=True)
-    sub_category: Mapped[str | None] = mapped_column(String(100), nullable=True)
-    category: Mapped[str | None] = mapped_column(String(100), nullable=True, default="Uncategorized")
+    sub_type: Mapped[Optional[str]] = mapped_column(String(100), nullable=True)
+    sub_category: Mapped[Optional[str]] = mapped_column(String(100), nullable=True)
+    category: Mapped[Optional[str]] = mapped_column(String(100), nullable=True, default="Uncategorized")
+
     created_at: Mapped[datetime] = mapped_column(DateTime, default=func.now())
 
 class ConfigORM(Base):

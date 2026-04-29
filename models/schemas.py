@@ -1,3 +1,4 @@
+from typing import Optional
 import uuid
 from datetime import datetime
 
@@ -9,9 +10,9 @@ class KeywordBase(BaseModel):
     term: str
     weight: float = 1.0
     type: str = "Sector"
-    sub_type: str | None = None
-    sub_category: str | None = None
-    category: str | None = "Uncategorized"
+    sub_type: Optional[str] = None
+    sub_category: Optional[str] = None
+    category: Optional[str] = "Uncategorized"
 
 class KeywordCreate(KeywordBase):
     pass
@@ -23,9 +24,10 @@ class Keyword(KeywordBase):
 class TenderInput(BaseModel):
     """Stateless input for rating"""
     id: str
-    title: str | None = None
-    description: str | None = None
-    full_text: str | None = None
+    title: Optional[str] = None
+    description: Optional[str] = None
+    full_text: Optional[str] = None
+
     cpv_codes: list[str] = []
 
 class RatedKeyword(BaseModel):

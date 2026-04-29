@@ -1,7 +1,6 @@
 import { useState, useEffect, useMemo, useRef, type FC, type ReactNode } from 'react'
 import AdminHeader from './components/layout/AdminHeader';
-import {
-  PButton,
+import {PButton,
   PTextFieldWrapper,
   PSelectWrapper,
   PModal,
@@ -9,8 +8,7 @@ import {
   PText,
   PTag,
   PIcon,
-  PFlex,
-} from '@porsche-design-system/components-react'
+  PFlex} from '@porsche-design-system/components-react'
 import { DndContext, type DragEndEvent, PointerSensor, KeyboardSensor, useSensor, useSensors, rectIntersection } from '@dnd-kit/core'
 import { api, type Keyword, type KeywordCreate } from './api'
 import { useURLState } from './useURLState'

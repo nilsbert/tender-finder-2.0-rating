@@ -1,4 +1,4 @@
-import { PModal, PButton, PHeading, PText, PFlex, PTag, PIcon } from '@porsche-design-system/components-react'
+import {PModal, PButton, PHeading, PText, PFlex, PTag, PIcon} from '@porsche-design-system/components-react'
 import type { Keyword, KeywordCreate } from './api'
 
 export interface KeywordImportSummary {

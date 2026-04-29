@@ -1,6 +1,6 @@
 import { useDraggable } from '@dnd-kit/core'
 import { CSS } from '@dnd-kit/utilities'
-import { PButton, PText, PFlex, PIcon } from '@porsche-design-system/components-react'
+import {PButton, PText, PFlex, PIcon} from '@porsche-design-system/components-react'
 import { type Keyword } from './api'
 
 interface DraggableKeywordProps {

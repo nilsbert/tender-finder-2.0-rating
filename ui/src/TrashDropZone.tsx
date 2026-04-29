@@ -1,5 +1,5 @@
 import { useDroppable } from '@dnd-kit/core'
-import { PIcon, PText } from '@porsche-design-system/components-react'
+import {PIcon, PText} from '@porsche-design-system/components-react'
 
 export function TrashDropZone() {
     const { setNodeRef, isOver, active } = useDroppable({

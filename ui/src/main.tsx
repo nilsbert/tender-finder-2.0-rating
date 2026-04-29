@@ -4,7 +4,7 @@ import { BrowserRouter } from 'react-router-dom';
 import App from './App';
 import './index.css';
 import { load as loadPorscheDesignSystem } from '@porsche-design-system/components-js';
-import { PorscheDesignSystemProvider } from '@porsche-design-system/components-react';
+import {PorscheDesignSystemProvider} from '@porsche-design-system/components-react';
 
 // Initialize Porsche Design System
 loadPorscheDesignSystem();

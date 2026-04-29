@@ -1,4 +1,4 @@
-:root {
+@import '@porsche-design-system/components-react/index.css';\n:root {
   --tf-bg-surface: #0e0e12;
   --tf-bg-card: #18181f;
   --tf-bg-card-hover: #22222c;

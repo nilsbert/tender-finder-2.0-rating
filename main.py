@@ -8,7 +8,7 @@ from core.database import db
 from core.initial_data import get_initial_keywords
 from core.repository import RatingRepository
 from dotenv import load_dotenv
-from fastapi import FastAPI
+from fastapi import FastAPI, Request, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
@@ -85,11 +85,36 @@ app.add_middleware(
 ui_dist_path = os.path.join(os.path.dirname(__file__), "ui", "dist")
 
 if os.path.exists(ui_dist_path):
+    @app.get("/ms/rating/", include_in_schema=False)
     @app.get("/")
-    async def root_redirect():
+    async def ui_root():
         return FileResponse(os.path.join(ui_dist_path, "index.html"))
 
-    app.mount("/", StaticFiles(directory=ui_dist_path, html=True), name="ui")
+    app.mount("/assets", StaticFiles(directory=os.path.join(ui_dist_path, "assets")), name="assets")
+    app.mount("/ms/rating/assets", StaticFiles(directory=os.path.join(ui_dist_path, "assets")), name="ms_assets")
+
+    # Catch-all for React SPA routes
+    @app.get("/{full_path:path}", include_in_schema=False)
+    async def spa_catchall(request: Request, full_path: str):
+        # Ignore API routes
+        if full_path.startswith("api/") or full_path == "health":
+            return None # Let FastAPI handle it
+
+        # Strip the /ms/rating prefix if present in the request path
+        search_path = full_path
+        if search_path.startswith("ms/rating/"):
+            search_path = search_path[len("ms/rating/") :]
+
+        # Check if file exists in dist
+        file_path = os.path.join(ui_dist_path, search_path.lstrip("/"))
+        if os.path.isfile(file_path):
+            return FileResponse(file_path)
+
+        # Do NOT serve index.html for missing assets
+        if "." in search_path.split("/")[-1] and not search_path.endswith(".html"):
+             raise HTTPException(status_code=404, detail="Asset not found")
+
+        return FileResponse(os.path.join(ui_dist_path, "index.html"))
 else:
     @app.get("/")
     async def root():

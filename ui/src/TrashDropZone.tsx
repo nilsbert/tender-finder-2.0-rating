@@ -28,13 +28,13 @@ export function TrashDropZone() {
             <PIcon
                 name="delete"
                 size="medium"
-                color={isOver && active ? 'notification-error' : 'contrast-low'}
+                color={isOver && active ? 'notification-error' : 'inherit'}
                 theme="dark"
             />
             <PText
                 size="small"
                 weight="semi-bold"
-                color={isOver && active ? 'notification-error' : 'contrast-low'}
+                color={isOver && active ? 'notification-error' : 'inherit'}
                 theme="dark"
             >
                 {isOver && active ? 'Release to Delete' : 'Drag here to delete'}

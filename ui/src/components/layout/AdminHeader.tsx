@@ -58,7 +58,7 @@ const AdminHeader: React.FC<AdminHeaderProps> = ({ activeService }) => {
                   height: '64px',
                   display: 'flex',
                   alignItems: 'center',
-                  color: isActive ? '#d5001c' : '#8b8b9e',
+                  color: isActive ? '#d5001c' : '#B0B0B0',
                   fontSize: '13px',
                   fontWeight: isActive ? '600' : '500',
                   transition: 'all 0.2s ease',

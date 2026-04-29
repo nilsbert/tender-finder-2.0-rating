@@ -326,15 +326,15 @@ function App() {
                 </div>
 
                 {(searchQuery || typeFilter || subTypeFilter) && (
-                  <PButton variant="tertiary" icon="close" onClick={clearFilters} style={{ marginBottom: '2px' }} theme="dark">Clear</PButton>
+                  <PButton variant="secondary" icon="close" onClick={clearFilters} style={{ marginBottom: '2px' }} theme="dark">Clear</PButton>
                 )}
               </PFlex>
 
               <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
                 <PButton variant="primary" icon="plus" onClick={openAddModal} theme="dark">Add Keyword</PButton>
                 <PFlex>
-                  <PButton variant="tertiary" icon="download" onClick={handleExport} theme="dark">Export</PButton>
-                  <PButton variant="tertiary" icon="upload" onClick={handleImportClick} loading={isImporting} theme="dark">Import</PButton>
+                  <PButton variant="secondary" icon="download" onClick={handleExport} theme="dark">Export</PButton>
+                  <PButton variant="secondary" icon="upload" onClick={handleImportClick} loading={isImporting} theme="dark">Import</PButton>
                   <input type="file" ref={fileInputRef} style={{ display: 'none' }} accept="application/json,.json,.JSON,application/x-yaml,.yaml,.yml" onChange={handleFileSelect} />
                 </PFlex>
                 <div style={{ textAlign: 'right', color: 'var(--tf-text-muted)', flex: 1 }}>
@@ -444,7 +444,7 @@ function App() {
             </div>
 
             <PFlex justifyContent="flex-end" style={{ gap: '12px' }}>
-              <PButton type="button" variant="tertiary" onClick={() => setIsModalOpen(false)} theme="dark">Cancel</PButton>
+              <PButton type="button" variant="secondary" onClick={() => setIsModalOpen(false)} theme="dark">Cancel</PButton>
               <PButton type="submit" theme="dark">{editingId ? 'Save Changes' : 'Add Keyword'}</PButton>
             </PFlex>
           </div>

@@ -1,17 +1,28 @@
-// @ts-nocheck\nimport React from 'react';
-// Export everything from the real package bypassing exports map
+// @ts-nocheck
+import React from 'react';
+// Import needed components from the real package bypassing exports map
 // @ts-ignore
+import * as PDS from '../node_modules/@porsche-design-system/components-react/esm/public-api.mjs';
+
+// Export everything
 export * from '../node_modules/@porsche-design-system/components-react/esm/public-api.mjs';
 
-// Import needed components from the real package for the wrappers
-// @ts-ignore
-import { 
+// Alias PHeading to PHeadline if needed
+export const PHeading = PDS.PHeading || PDS.PHeadline;
+export const PHeadline = PDS.PHeadline || PDS.PHeading;
+export const PText = PDS.PText;
+export const PTag = PDS.PTag;
+export const PIcon = PDS.PIcon;
+export const PButton = PDS.PButton;
+export const PModal = PDS.PModal;
+
+const { 
   PInputText, 
-  PSelect as PDSSelect, 
+  PSelect: PDSSelect, 
   PSelectOption, 
-  PCheckbox as PDSCheckbox, 
-  PTextarea as PDSTextarea 
-} from '../node_modules/@porsche-design-system/components-react/esm/public-api.mjs';
+  PCheckbox: PDSCheckbox, 
+  PTextarea: PDSTextarea 
+} = PDS;
 
 // Polyfill removed components
 export const PContentWrapper = ({ children, style }: any) => {
@@ -128,6 +139,3 @@ export const PTextareaWrapper = ({ label, children, description }: any) => {
     />
   );
 };
-
-// @ts-ignore
-export { PHeading as PHeadline } from "../node_modules/@porsche-design-system/components-react/esm/public-api.mjs";

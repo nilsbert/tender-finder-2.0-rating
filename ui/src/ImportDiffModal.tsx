@@ -118,7 +118,7 @@ export const ImportDiffModal: React.FC<ImportDiffModalProps> = ({
                             </div>
 
                             <PFlex justifyContent="flex-end" style={{ gap: '12px' }}>
-                                <PButton variant="tertiary" onClick={onClose} disabled={isExecuting} theme="dark">Cancel</PButton>
+                                <PButton variant="secondary" onClick={onClose} disabled={isExecuting} theme="dark">Cancel</PButton>
                                 <PButton variant="secondary" onClick={() => onConfirm(false)} loading={isExecuting} theme="dark">
                                     Merge (Keep Missing)
                                 </PButton>
@@ -129,7 +129,7 @@ export const ImportDiffModal: React.FC<ImportDiffModalProps> = ({
                         </div>
                     ) : (
                         <PFlex justifyContent="flex-end" style={{ gap: '12px' }}>
-                            <PButton variant="tertiary" onClick={onClose} disabled={isExecuting} theme="dark">Cancel</PButton>
+                            <PButton variant="secondary" onClick={onClose} disabled={isExecuting} theme="dark">Cancel</PButton>
                             <PButton variant="primary" onClick={() => onConfirm(false)} loading={isExecuting} disabled={!hasCreates && !hasUpdates} theme="dark">
                                 Confirm Import
                               </PButton>

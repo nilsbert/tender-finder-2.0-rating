@@ -1,13 +1,15 @@
-@import '@porsche-design-system/components-react/index.css';\n:root {
-  --tf-bg-surface: #0e0e12;
-  --tf-bg-card: #18181f;
-  --tf-bg-card-hover: #22222c;
-  --tf-bg-input: #1e1e28;
-  --tf-border: rgba(255, 255, 255, 0.06);
-  --tf-text: #e8e8ec;
-  --tf-text-muted: #8b8b9e;
-  --tf-accent: #d5001c; /* Porsche Red */
-  --tf-accent-soft: rgba(213, 0, 28, 0.12);
+@import '@porsche-design-system/components-react/index.css';
+:root {
+  --tf-bg-surface: #0E0E12;
+  --tf-bg-card: #17171C;
+  --tf-bg-card-hover: #212126;
+  --tf-bg-input: #1D1D23;
+  --tf-border: rgba(255, 255, 255, 0.08);
+  --tf-text: #FFFFFF;
+  --tf-text-secondary: #E0E0E0;
+  --tf-text-muted: #B0B0B0;
+  --tf-accent: #D5001C; /* Porsche Red */
+  --tf-accent-soft: rgba(213, 0, 28, 0.15);
   --tf-radius: 12px;
   --tf-radius-sm: 8px;
 }

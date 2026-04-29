@@ -96,7 +96,7 @@ export function DraggableKeyword({ keyword, onEdit }: DraggableKeywordProps) {
                 </PFlex>
                 <div onClick={(e) => e.stopPropagation()}>
                     <PButton
-                        variant="tertiary"
+                        variant="secondary"
                         icon="edit"
                         hideLabel
                         onClick={() => onEdit(keyword)}

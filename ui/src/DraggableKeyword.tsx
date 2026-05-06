@@ -56,9 +56,9 @@ export function DraggableKeyword({ keyword, onEdit }: DraggableKeywordProps) {
                 style={{
                     margin: '6px 12px 6px 60px',
                     padding: '8px 12px',
-                    backgroundColor: 'var(--tf-bg-input)',
-                    borderRadius: 'var(--tf-radius-sm)',
                     border: '1px solid var(--tf-border)',
+                    borderRadius: 'var(--tf-radius-sm)',
+                    backgroundColor: 'var(--tf-bg-input)',
                     display: 'inline-flex',
                     alignItems: 'center',
                     gap: '12px',
@@ -81,13 +81,13 @@ export function DraggableKeyword({ keyword, onEdit }: DraggableKeywordProps) {
                 <PFlex alignItems="center" style={{ gap: '4px' }}>
                     <PIcon
                         name={displayWeight >= 0 ? 'arrow-head-up' : 'arrow-head-down'}
-                        color={displayWeight >= 0 ? 'notification-success' : 'notification-error'}
+                        style={{ color: displayWeight >= 0 ? 'var(--tf-status-success)' : 'var(--tf-status-error)' }}
                         size="x-small"
                         theme="dark"
                     />
                     <PText
                         size="x-small"
-                        color={displayWeight >= 0 ? 'notification-success' : 'notification-error'}
+                        style={{ color: displayWeight >= 0 ? 'var(--tf-status-success)' : 'var(--tf-status-error)' }}
                         weight="semi-bold"
                         theme="dark"
                     >

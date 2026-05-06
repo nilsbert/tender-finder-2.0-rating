@@ -17,8 +17,8 @@ const AdminHeader: React.FC<AdminHeaderProps> = ({ activeService }) => {
 
   return (
     <header style={{
-      backgroundColor: '#0e0e12',
-      borderBottom: '1px solid rgba(255, 255, 255, 0.06)',
+      backgroundColor: 'var(--tf-bg-surface)',
+      borderBottom: '1px solid var(--tf-border)',
       padding: '0 40px',
       height: '64px',
       display: 'flex',
@@ -34,11 +34,11 @@ const AdminHeader: React.FC<AdminHeaderProps> = ({ activeService }) => {
       <div style={{ display: 'flex', alignItems: 'center', gap: '24px' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
           <svg viewBox="0 0 32 32" style={{ width: '32px', height: '32px' }}>
-            <rect width="32" height="32" rx="8" fill="#d5001c" />
+            <rect width="32" height="32" rx="8" fill="var(--tf-accent)" />
             <path d="M8 16L14 10L20 16L14 22Z" fill="#fff" />
             <path d="M16 13L22 7L28 13L22 19Z" fill="rgba(255,255,255,0.5)" />
           </svg>
-          <span style={{ margin: 0, letterSpacing: '-0.02em', whiteSpace: 'nowrap', fontWeight: 700, fontSize: '16px', color: '#fff' }}>
+          <span style={{ margin: 0, letterSpacing: '-0.02em', whiteSpace: 'nowrap', fontWeight: 700, fontSize: '16px', color: 'var(--tf-text)' }}>
             TENDER FINDER <span style={{ fontWeight: 300, opacity: 0.5 }}>| {currentService?.title || 'Admin Suite'}</span>
           </span>
         </div>
@@ -58,12 +58,12 @@ const AdminHeader: React.FC<AdminHeaderProps> = ({ activeService }) => {
                   height: '64px',
                   display: 'flex',
                   alignItems: 'center',
-                  color: isActive ? '#d5001c' : '#B0B0B0',
+                  color: isActive ? 'var(--tf-accent)' : 'var(--tf-text-muted)',
                   fontSize: '13px',
                   fontWeight: isActive ? '600' : '500',
                   transition: 'all 0.2s ease',
-                  borderBottom: isActive ? '2px solid #d5001c' : '2px solid transparent',
-                  backgroundColor: isActive ? 'rgba(213, 0, 28, 0.05)' : 'transparent',
+                  borderBottom: isActive ? '2px solid var(--tf-accent)' : '2px solid transparent',
+                  backgroundColor: isActive ? 'var(--tf-accent-soft)' : 'transparent',
                 }}
               >
                 {s.name}

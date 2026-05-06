@@ -27,7 +27,7 @@ const StandardPageHeader: FC<{ title: string; subtitle?: string; actions?: React
     padding: '24px',
     borderRadius: 'var(--tf-radius)',
     border: '1px solid var(--tf-border)',
-    boxShadow: '0 2px 8px rgba(0,0,0,0.2)',
+    boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4)',
     marginBottom: '24px'
   }}>
     <div style={{

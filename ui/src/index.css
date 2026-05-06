@@ -1,17 +1,42 @@
 @import '@porsche-design-system/components-react/index.css';
 :root {
-  --tf-bg-surface: #0E0E12;
-  --tf-bg-card: #17171C;
-  --tf-bg-card-hover: #212126;
-  --tf-bg-input: #1D1D23;
-  --tf-border: rgba(255, 255, 255, 0.08);
-  --tf-text: #FFFFFF;
-  --tf-text-secondary: #E0E0E0;
-  --tf-text-muted: #B0B0B0;
-  --tf-accent: #D5001C; /* Porsche Red */
+  /* Porsche Design System Colors (matching Enriching) */
+  --porsche-red: #D5001C;
+  --porsche-black: #000000;
+  --porsche-silver: #A2A2A2;
+  --porsche-dark-grey: #111111;
+  --porsche-light-grey: #222222;
+  --porsche-white: #FFFFFF;
+
+  /* Theme Mapping */
+  --tf-bg-surface: var(--porsche-black);
+  --tf-bg-card: var(--porsche-dark-grey);
+  --tf-bg-card-hover: var(--porsche-light-grey);
+  --tf-bg-input: var(--porsche-light-grey);
+  --tf-border: rgba(255, 255, 255, 0.1);
+  --tf-text: var(--porsche-white);
+  --tf-text-secondary: var(--porsche-silver);
+  --tf-text-muted: var(--porsche-silver);
+  --tf-accent: var(--porsche-red);
   --tf-accent-soft: rgba(213, 0, 28, 0.15);
   --tf-radius: 12px;
   --tf-radius-sm: 8px;
+
+  /* Enriching UI Contexts */
+  --bg-primary: var(--porsche-black);
+  --bg-secondary: var(--porsche-dark-grey);
+  --bg-tertiary: var(--porsche-light-grey);
+  --text-primary: var(--porsche-white);
+  --text-secondary: var(--porsche-silver);
+  --accent: var(--porsche-red);
+  --border: var(--tf-border);
+  --glass: rgba(255, 255, 255, 0.05);
+
+  /* Status Colors */
+  --tf-status-success: #01ba6d;
+  --tf-status-error: #ff4d4f;
+  --tf-status-warning: #ffec3d;
+  --tf-status-info: #1890ff;
 }
 
 * {
@@ -22,6 +47,7 @@
 
 body {
   font-family: 'Inter', 'Porsche Next', -apple-system, BlinkMacSystemFont, sans-serif;
+  background: radial-gradient(circle at top right, #1a1a1a 0%, #000000 70%);
   background-color: var(--tf-bg-surface);
   color: var(--tf-text);
   line-height: 1.5;
@@ -35,23 +61,27 @@ body {
   padding: 40px;
 }
 
-/* Custom Scrollbar */
+/* Custom Scrollbar (Matching Enriching) */
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 6px;
 }
 
 ::-webkit-scrollbar-track {
-  background: transparent;
+  background: var(--tf-bg-surface);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--tf-border);
-  border-radius: 4px;
+  background: var(--tf-bg-card-hover);
+  border-radius: 10px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--tf-text-muted);
+  background: var(--tf-accent);
+}
+
+::selection {
+  background-color: var(--tf-accent);
+  color: white;
 }
 
 /* Drag and Drop Styles */

@@ -8,7 +8,7 @@ import {PButton,
   PText,
   PTag,
   PIcon,
-  PFlex} from '@porsche-design-system/components-react'
+  PFlex} from './pds-wrapper'
 import { DndContext, type DragEndEvent, PointerSensor, KeyboardSensor, useSensor, useSensors, rectIntersection } from '@dnd-kit/core'
 import { api, type Keyword, type KeywordCreate } from './api'
 import { useURLState } from './useURLState'

@@ -48,7 +48,6 @@
 body {
   font-family: 'Inter', 'Porsche Next', -apple-system, BlinkMacSystemFont, sans-serif;
   background: radial-gradient(circle at top right, #1a1a1a 0%, #000000 70%);
-  background-color: var(--tf-bg-surface);
   color: var(--tf-text);
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
@@ -59,6 +58,19 @@ body {
   max-width: 1400px;
   margin: 0 auto;
   padding: 40px;
+}
+
+.glass-panel {
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  transition: border-color 0.3s ease;
+}
+
+.glass-panel:hover {
+  border-color: rgba(213, 0, 28, 0.2);
 }
 
 /* Custom Scrollbar (Matching Enriching) */

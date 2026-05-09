@@ -49,7 +49,7 @@ export const ImportDiffModal: React.FC<ImportDiffModalProps> = ({
                     <PTag color={hasDeletes ? "error" : "background-surface"} theme="dark">Missing in file: {summary.deleted.length}</PTag>
                 </PFlex>
 
-                <div style={{ maxHeight: '400px', overflowY: 'auto', border: '1px solid var(--tf-border)', borderRadius: 'var(--tf-radius-sm)', padding: '16px', backgroundColor: 'var(--tf-bg-input)' }}>
+                <div className="glass-panel" style={{ maxHeight: '400px', overflowY: 'auto', padding: '16px' }}>
 
                     {/* Creates */}
                     {hasCreates && (

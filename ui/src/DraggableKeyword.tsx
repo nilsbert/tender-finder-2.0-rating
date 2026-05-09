@@ -58,7 +58,7 @@ export function DraggableKeyword({ keyword, onEdit }: DraggableKeywordProps) {
                     padding: '8px 12px',
                     border: '1px solid var(--tf-border)',
                     borderRadius: 'var(--tf-radius-sm)',
-                    backgroundColor: 'var(--tf-bg-input)',
+                    backgroundColor: 'rgba(255, 255, 255, 0.05)',
                     display: 'inline-flex',
                     alignItems: 'center',
                     gap: '12px',

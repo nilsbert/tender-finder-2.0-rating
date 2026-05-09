@@ -17,7 +17,7 @@ const AdminHeader: React.FC<AdminHeaderProps> = ({ activeService }) => {
 
   return (
     <header style={{
-      backgroundColor: 'var(--tf-bg-surface)',
+      backgroundColor: 'rgba(17, 17, 17, 0.8)',
       borderBottom: '1px solid var(--tf-border)',
       padding: '0 40px',
       height: '64px',
@@ -38,8 +38,8 @@ const AdminHeader: React.FC<AdminHeaderProps> = ({ activeService }) => {
             <path d="M8 16L14 10L20 16L14 22Z" fill="#fff" />
             <path d="M16 13L22 7L28 13L22 19Z" fill="rgba(255,255,255,0.5)" />
           </svg>
-          <span style={{ margin: 0, letterSpacing: '-0.02em', whiteSpace: 'nowrap', fontWeight: 700, fontSize: '16px', color: 'var(--tf-text)' }}>
-            TENDER FINDER <span style={{ fontWeight: 300, opacity: 0.5 }}>| {currentService?.title || 'Admin Suite'}</span>
+          <span style={{ margin: 0, letterSpacing: '1px', whiteSpace: 'nowrap', fontWeight: 700, fontSize: '18px', color: 'var(--tf-accent)', textTransform: 'uppercase' }}>
+            {currentService?.name || 'ADMIN'} <span style={{ fontWeight: 300, color: 'var(--tf-text)' }}>ADMIN</span>
           </span>
         </div>
 

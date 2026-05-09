@@ -22,12 +22,8 @@ import { ImportDiffModal, type KeywordImportSummary } from './ImportDiffModal'
 const StandardPageHeader: FC<{ title: string; subtitle?: string; actions?: ReactNode; children?: ReactNode }> = ({ 
   title, subtitle, actions, children 
 }) => (
-  <div style={{
-    backgroundColor: 'var(--tf-bg-card)',
+  <div className="glass-panel" style={{
     padding: '24px',
-    borderRadius: 'var(--tf-radius)',
-    border: '1px solid var(--tf-border)',
-    boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4)',
     marginBottom: '24px'
   }}>
     <div style={{
@@ -283,7 +279,7 @@ function App() {
   const totalKeywords = keywords.length
 
   return (
-    <div style={{ minHeight: '100vh', backgroundColor: 'var(--tf-bg-surface)' }}>
+    <div style={{ minHeight: '100vh', backgroundColor: 'transparent' }}>
       <StandaloneHeader />
 
       <main style={{ maxWidth: '1400px', margin: '0 auto', padding: '32px 40px' }}>
@@ -353,7 +349,8 @@ function App() {
                   type={typeGroup.type}
                   isExpanded={expandedGroups.has(typeGroup.type)}
                   onAutoExpand={() => toggleGroup(typeGroup.type)}
-                  style={{ backgroundColor: 'var(--tf-bg-card)', borderRadius: 'var(--tf-radius)', border: '1px solid var(--tf-border)', overflow: 'hidden' }}
+                  className="glass-panel"
+                  style={{ overflow: 'hidden', padding: 0 }}
                 >
                   <div
                     style={{ padding: '16px 24px', backgroundColor: 'rgba(255,255,255,0.02)', borderBottom: '1px solid var(--tf-border)', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}

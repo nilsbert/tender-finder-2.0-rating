@@ -13,6 +13,7 @@
     "@dnd-kit/utilities": "^3.2.2",
     "@porsche-design-system/components-react": "4.0.0",
     "axios": "^1.13.2",
+    "lucide-react": "^0.460.0",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
     "react-router-dom": "^6.30.2"

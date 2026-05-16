@@ -282,14 +282,18 @@ function App() {
     <div style={{ minHeight: '100vh', backgroundColor: 'transparent' }}>
       <StandaloneHeader />
 
-      <main style={{ maxWidth: '1400px', margin: '0 auto', padding: '32px 40px' }}>
+      <main className="container">
           <StandardPageHeader
             title="Search Keywords"
             subtitle="Manage keywords and weights for scoring government tenders."
           >
             <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', marginTop: '24px' }}>
-              <PFlex alignItems="flex-end" style={{ gap: '16px', flexWrap: 'wrap' }}>
-                <div style={{ flex: 1, minWidth: '200px' }}>
+              <div style={{ 
+                display: 'grid', 
+                gridTemplateColumns: '1fr',
+                gap: '16px'
+              }} className="filter-grid-responsive">
+                <div style={{ minWidth: '0' }}>
                   <PTextFieldWrapper label="Search keywords" theme="dark">
                     <input
                       type="text"
@@ -301,40 +305,46 @@ function App() {
                   </PTextFieldWrapper>
                 </div>
 
-                <div style={{ minWidth: '140px' }}>
-                  <PSelectWrapper label="Type" theme="dark">
-                    <select value={typeFilter} onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setTypeFilter(e.target.value)} style={{ height: '40px' }}>
-                      <option value="">All Types</option>
-                      <option value="Service">Service</option>
-                      <option value="Sector">Sector</option>
-                      <option value="Exclusion">Exclusion</option>
-                    </select>
-                  </PSelectWrapper>
-                </div>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+                  <div style={{ minWidth: '0' }}>
+                    <PSelectWrapper label="Type" theme="dark">
+                      <select value={typeFilter} onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setTypeFilter(e.target.value)} style={{ height: '40px', width: '100%' }}>
+                        <option value="">All Types</option>
+                        <option value="Service">Service</option>
+                        <option value="Sector">Sector</option>
+                        <option value="Exclusion">Exclusion</option>
+                      </select>
+                    </PSelectWrapper>
+                  </div>
 
-                <div style={{ minWidth: '180px' }}>
-                  <PSelectWrapper label="Sub-type" theme="dark">
-                    <select value={subTypeFilter} onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setSubTypeFilter(e.target.value)} style={{ height: '40px' }}>
-                      <option value="">All Sub-types</option>
-                      {existingSubTypes.map(cat => (<option key={cat} value={cat}>{cat}</option>))}
-                    </select>
-                  </PSelectWrapper>
+                  <div style={{ minWidth: '0' }}>
+                    <PSelectWrapper label="Sub-type" theme="dark">
+                      <select value={subTypeFilter} onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setSubTypeFilter(e.target.value)} style={{ height: '40px', width: '100%' }}>
+                        <option value="">All Sub-types</option>
+                        {existingSubTypes.map(cat => (<option key={cat} value={cat}>{cat}</option>))}
+                      </select>
+                    </PSelectWrapper>
+                  </div>
                 </div>
 
                 {(searchQuery || typeFilter || subTypeFilter) && (
-                  <PButton variant="secondary" icon="close" onClick={clearFilters} style={{ marginBottom: '2px' }} theme="dark">Clear</PButton>
+                  <PButton variant="secondary" icon="close" onClick={clearFilters} theme="dark" style={{ width: '100%' }}>Clear Filters</PButton>
                 )}
-              </PFlex>
+              </div>
 
-              <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-                <PButton variant="primary" icon="plus" onClick={openAddModal} theme="dark">Add Keyword</PButton>
-                <PFlex>
+              <div style={{ 
+                display: 'flex', 
+                flexDirection: 'column',
+                gap: '16px'
+              }}>
+                <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                  <PButton variant="primary" icon="plus" onClick={openAddModal} theme="dark" style={{ flex: 1 }}>Add Keyword</PButton>
                   <PButton variant="secondary" icon="download" onClick={handleExport} theme="dark">Export</PButton>
                   <PButton variant="secondary" icon="upload" onClick={handleImportClick} loading={isImporting} theme="dark">Import</PButton>
                   <input type="file" ref={fileInputRef} style={{ display: 'none' }} accept="application/json,.json,.JSON,application/x-yaml,.yaml,.yml" onChange={handleFileSelect} />
-                </PFlex>
-                <div style={{ textAlign: 'right', color: 'var(--tf-text-muted)', flex: 1 }}>
-                  <PText size="small" theme="dark">{totalKeywords} keywords defined</PText>
+                </div>
+                <div style={{ textAlign: 'center', color: 'var(--tf-text-muted)', borderTop: '1px solid var(--tf-border)', paddingTop: '12px' }}>
+                  <PText size="x-small" theme="dark">{totalKeywords} keywords defined</PText>
                 </div>
               </div>
             </div>
@@ -353,7 +363,7 @@ function App() {
                   style={{ overflow: 'hidden', padding: 0 }}
                 >
                   <div
-                    style={{ padding: '16px 24px', backgroundColor: 'rgba(255,255,255,0.02)', borderBottom: '1px solid var(--tf-border)', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}
+                    style={{ padding: '16px 20px', backgroundColor: 'rgba(255,255,255,0.02)', borderBottom: '1px solid var(--tf-border)', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}
                     onClick={() => toggleGroup(typeGroup.type)}
                   >
                     <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
@@ -375,7 +385,7 @@ function App() {
                           onAutoExpand={() => toggleGroup(`${typeGroup.type}-${subTypeGroup.name}`)}
                         >
                           <div
-                            style={{ padding: '10px 24px 10px 48px', backgroundColor: 'transparent', borderTop: '1px solid var(--tf-border)', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px' }}
+                            style={{ padding: '10px 20px 10px 32px', backgroundColor: 'transparent', borderTop: '1px solid var(--tf-border)', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px' }}
                             onClick={() => toggleGroup(`${typeGroup.type}-${subTypeGroup.name}`)}
                           >
                             <PIcon name={expandedGroups.has(`${typeGroup.type}-${subTypeGroup.name}`) ? 'arrow-head-down' : 'arrow-head-right'} size="small" theme="dark" />
@@ -384,7 +394,7 @@ function App() {
                           </div>
 
                           {expandedGroups.has(`${typeGroup.type}-${subTypeGroup.name}`) && (
-                            <div style={{ padding: '0 48px 8px 64px' }}>
+                            <div style={{ padding: '0 12px 8px 32px' }}>
                               {subTypeGroup.keywords.map((k: Keyword) => (
                                 <DraggableKeyword key={k.id} keyword={k} onEdit={handleEdit} />
                               ))}

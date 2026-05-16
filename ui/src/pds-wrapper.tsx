@@ -1,6 +1,6 @@
 // @ts-nocheck
 import React from 'react';
-import { Plus, Trash2, Save, Edit2, X, ChevronRight, Download, Upload, Activity, Zap, Search, Filter, RotateCcw } from 'lucide-react';
+import { Plus, Trash2, Save, Edit2, X, ChevronRight, Download, Upload, Activity, Zap, Search, Filter, RotateCcw, Menu } from 'lucide-react';
 
 // Mock Provider
 export const PorscheDesignSystemProvider = ({ children }: any) => <div className="pds-provider">{children}</div>;
@@ -216,7 +216,7 @@ export const PSelectWrapper = ({ label, children, theme }: any) => (
 );
 
 export const PIcon = ({ name, color, size, theme, style }: any) => {
-  const iconSize = size === 'small' ? 14 : 18;
+  const iconSize = size === 'small' ? 14 : size === 'large' ? 24 : 18;
   switch (name) {
     case 'arrow-head-down': return <ChevronRight size={iconSize} style={{ transform: 'rotate(90deg)', ...style }} />;
     case 'arrow-head-right': return <ChevronRight size={iconSize} style={style} />;
@@ -225,6 +225,10 @@ export const PIcon = ({ name, color, size, theme, style }: any) => {
     case 'save': return <Save size={iconSize} style={style} />;
     case 'edit': return <Edit2 size={iconSize} style={style} />;
     case 'warning': return <Zap size={iconSize} style={{ color: '#ffcc00', ...style }} />;
+    case 'menu': return <Menu size={iconSize} style={style} />;
+    case 'search': return <Search size={iconSize} style={style} />;
+    case 'filter': return <Filter size={iconSize} style={style} />;
+    case 'activity': return <Activity size={iconSize} style={style} />;
     default: return <Activity size={iconSize} style={style} />;
   }
 };

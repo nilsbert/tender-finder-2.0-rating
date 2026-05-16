@@ -1,95 +1,72 @@
 # 🛠️ Public Interface: Rating API
 
-> **Base Path:** `/api/rating`
+> **Base Path:** `/api/v1/rating`
 > **Port:** 8012
-> **OpenAPI Docs:** `http://localhost:8012/docs`
+> **Owner:** Tender Finder Team
 
-The Rating MS serves as the **Scoring Intelligence Engine**, providing keyword-based relevance scoring and threshold management.
+The **Rating MS** is the prioritization engine, applying the "Company Brain" to enriched tender data.
 
 ---
 
-## 📡 Endpoints
+## 📡 Scoring Endpoints
 
-### 1. GET /health
-Health check endpoint.
+### 1. POST /api/v1/rating/score
 
-#### Response (200)
-```json
-{ "status": "healthy" }
-```
+Calculate the authoritative relevance score for a tender.
 
-### 2. POST /api/rating/score
-Calculate a relevance score for a tender.
-- **Consumers**: Enriching MS
+- **Logic**: Applies weighted keyword matching with location-aware multipliers.
+- **Authoritative Data**: Consumes keyword weights from the Distribution Authority.
 
 #### Request Body
+
 ```json
 {
-  "tender_id": "string",
-  "title": "Infrastructure modernization project",
-  "description": "Full project description text..."
+  "tender_id": "uuid",
+  "text_content": "Full tender text...",
+  "context": {
+    "location": "DE",
+    "industry": "Public Sector"
+  }
 }
 ```
 
-#### Response (200)
+#### Response: Score Result (200)
+
 ```json
 {
-  "tender_id": "string",
+  "tender_id": "uuid",
   "total_score": 85.5,
-  "title_score": 42.0,
-  "matches": [
-    {
-      "keyword": "infrastructure",
-      "weight": 10.0,
-      "location": "HEADLINE",
-      "multiplier": 3.0,
-      "contribution": 30.0
-    }
-  ]
+  "explanation_id": "uuid"
 }
 ```
 
-### 3. GET /api/rating/keywords
-List all registered keywords.
+### 2. GET /api/v1/rating/explain/{tender_id}
 
-#### Response (200)
+Fetch a detailed points breakdown for a specific scoring result. Used by the UI to justify match results.
+
+#### Response: Explanation Detail (200)
+
 ```json
 {
-  "keywords": [
-    {
-      "id": 1,
-      "term": "infrastructure",
-      "weight": 10.0,
-      "category": "core",
-      "is_active": true
-    }
+  "breakdown": [
+    { "factor": "Keyword: Cloud", "points": 30.0, "reason": "Headline match (3.0x)" },
+    { "factor": "Location: Munich", "points": 15.0, "reason": "Regional office proximity" }
   ]
-}
-```
-
-### 4. POST /api/rating/keywords
-Add a new keyword.
-
-### 5. PUT /api/rating/keywords/{id}
-Update an existing keyword.
-
-### 6. DELETE /api/rating/keywords/{id}
-Remove a keyword.
-
-### 7. GET /api/rating/config/thresholds
-Fetch current scoring thresholds.
-
-### 8. PUT /api/rating/config/thresholds
-Update scoring thresholds with mandatory audit trail.
-
-#### Request Body
-```json
-{
-  "overall_score_threshold": 50.0,
-  "title_score_threshold": 20.0,
-  "change_summary": "Lowered thresholds for broader lead capture"
 }
 ```
 
 ---
-*Maintained by the Tender Finder Architectural Board*
+
+## 📡 Policy Management
+
+### 3. GET /api/v1/rating/config/thresholds
+
+Fetch current priority cut-off values (e.g., what constitutes a "High Priority" match).
+
+### 4. PUT /api/v1/rating/config/thresholds
+
+Update threshold values. Requires a `change_summary` for the audit trail.
+
+---
+
+Maintained by the Tender Finder Architectural Board

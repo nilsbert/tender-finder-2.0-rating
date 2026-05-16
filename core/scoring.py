@@ -1,8 +1,19 @@
+import re
+import logging
 from dataclasses import dataclass, field
 from enum import Enum
-
 from models.schemas import Keyword as KeywordSchema
 
+# Try to import NLTK for better stemming, fallback to basic if not available
+try:
+    from nltk.stem.snowball import SnowballStemmer
+    german_stemmer = SnowballStemmer("german")
+    english_stemmer = SnowballStemmer("english")
+except ImportError:
+    german_stemmer = None
+    english_stemmer = None
+
+logger = logging.getLogger(__name__)
 
 class MatchLocation(str, Enum):
     HEADLINE = "headline"
@@ -14,6 +25,8 @@ class Match:
     keyword_term: str
     location: MatchLocation
     score_impact: float
+    entity_type: str = "Sector"
+    entity_name: str = "Unknown"
 
 @dataclass(frozen=True)
 class ScoringResult:
@@ -33,14 +46,23 @@ class ScoringPolicy:
 
     @staticmethod
     def calculate_score(tender_title: str, tender_description: str, tender_full_text: str, keywords: list[KeywordSchema]) -> ScoringResult:
-        headline = (tender_title or "").lower()
-        description = (tender_description or "").lower()
-        full_text = (tender_full_text or "").lower()
+        headline = tender_title or ""
+        description = tender_description or ""
+        full_text = tender_full_text or ""
 
         matches = []
         title_score = 0.0
 
+        # 1. Deduplicate keywords by term, keeping the one with the highest weight
+        # This ensures that even if 'SAP' is in the taxonomy multiple times, it only counts once.
+        unique_keywords = {}
         for kw in keywords:
+            term_lower = kw.term.strip().lower()
+            if term_lower not in unique_keywords or kw.weight > unique_keywords[term_lower].weight:
+                unique_keywords[term_lower] = kw
+
+        # 2. Match each unique keyword
+        for kw in unique_keywords.values():
             kw_matches, kw_title_impact = ScoringPolicy._match_keyword(kw, headline, description, full_text)
             matches.extend(kw_matches)
             title_score += kw_title_impact
@@ -57,29 +79,66 @@ class ScoringPolicy:
 
     @staticmethod
     def _match_keyword(kw: KeywordSchema, headline: str, description: str, full_text: str):
-        term = kw.term.lower()
+        term = kw.term.strip()
+        
+        # 1. Exact/Plural Match Pattern (Handles SAP vs Sapphire)
+        escaped_term = re.escape(term)
+        # Suffixes: e, s, en, er, es, n (German/English)
+        pattern = re.compile(rf"\b{escaped_term}(?:e|s|en|er|es|n)?\b", re.IGNORECASE)
+        
+        # 2. Stemming-based fallback for complex inflections (e.g. Strategy -> Strategies)
+        stem_patterns = []
+        for stemmer in [german_stemmer, english_stemmer]:
+            if stemmer and len(term) > 3:
+                stem = stemmer.stem(term)
+                if stem != term.lower() and len(stem) > 2:
+                    stem_patterns.append(re.compile(rf"\b{re.escape(stem)}[a-z]{{0,5}}\b", re.IGNORECASE))
+
         matches = []
         title_impact = 0.0
 
-        # Match per location (Safe for BDD deduplication rules)
-        if term in headline:
+        def check_match(text: str) -> bool:
+            if pattern.search(text): return True
+            for sp in stem_patterns:
+                if sp.search(text): return True
+            return False
+
+        # 3. Match per location - EXCLUSIVE (Every match counts only once per keyword)
+        # Priority: Headline > Description > Full Text
+        if check_match(headline):
             impact = kw.weight * ScoringPolicy.MULTIPLIERS[MatchLocation.HEADLINE]
-            matches.append(Match(kw.term, MatchLocation.HEADLINE, impact))
+            matches.append(Match(
+                keyword_term=kw.term, 
+                location=MatchLocation.HEADLINE, 
+                score_impact=impact,
+                entity_type=kw.type or "Sector",
+                entity_name=kw.sub_type or "General"
+            ))
             title_impact = kw.weight
-
-        if term in description:
+        elif check_match(description):
             impact = kw.weight * ScoringPolicy.MULTIPLIERS[MatchLocation.DESCRIPTION]
-            matches.append(Match(kw.term, MatchLocation.DESCRIPTION, impact))
-
-        if term in full_text:
+            matches.append(Match(
+                keyword_term=kw.term, 
+                location=MatchLocation.DESCRIPTION, 
+                score_impact=impact,
+                entity_type=kw.type or "Sector",
+                entity_name=kw.sub_type or "General"
+            ))
+        elif check_match(full_text):
             impact = kw.weight * ScoringPolicy.MULTIPLIERS[MatchLocation.FULL_TEXT]
-            matches.append(Match(kw.term, MatchLocation.FULL_TEXT, impact))
+            matches.append(Match(
+                keyword_term=kw.term, 
+                location=MatchLocation.FULL_TEXT, 
+                score_impact=impact,
+                entity_type=kw.type or "Sector",
+                entity_name=kw.sub_type or "General"
+            ))
 
         return matches, title_impact
 
+
     @staticmethod
     def _aggregate_scores(matches: list[Match], keywords: list[KeywordSchema]):
-        # Map term to keyword object for quick lookup
         kw_map = {kw.term: kw for kw in keywords}
         type_scores, subtype_scores, subcategory_scores = {}, {}, {}
 

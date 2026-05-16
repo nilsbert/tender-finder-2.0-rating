@@ -41,7 +41,9 @@ class RatingEngine:
             RatedKeyword(
                 term=m.keyword_term,
                 score=m.score_impact,
-                category=m.location.value
+                category=m.location.value,
+                entity_type=m.entity_type,
+                entity_name=m.entity_name
             ) for m in scoring_result.matches
         ]
 

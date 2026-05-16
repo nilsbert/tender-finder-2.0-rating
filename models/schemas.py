@@ -34,6 +34,8 @@ class RatedKeyword(BaseModel):
     term: str
     score: float
     category: str = "unknown"
+    entity_type: Optional[str] = None
+    entity_name: Optional[str] = None
 
 class RatingResult(BaseModel):
     tender_id: str

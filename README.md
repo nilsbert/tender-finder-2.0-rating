@@ -1,6 +1,6 @@
 # ⭐ Rating Microservice
 
-> **Domain Type:** Supporting Domain
+> **Domain Type:** Supporting Domain (Scoring Engine)
 > **Port:** 8012
 > **Owner:** Tender Finder Team
 
@@ -8,31 +8,28 @@
 
 ## 1. Purpose
 
-The Rating Microservice provides an autonomous, high-performance **Scoring Engine** that applies the "Company Brain" (Keyword Policy) to incoming tenders. It calculates quantitative relevance scores using weighted keyword matching with location-aware multipliers.
+The **Rating Microservice** is the prioritization engine of the ecosystem. It provides an autonomous, high-performance scoring system that applies the "Company Brain" (authoritative keyword weights) to enriched tender data.
 
+### Key Capabilities
+
+* **Weighted Keyword Matching**: Calculates relevance scores based on the presence and frequency of authoritative terms.
+* **Location-Aware Multipliers**: Adjusts scores based on the tender's proximity to regional offices or strategic markets.
+* **Transparents Scoring**: Provides detailed breakdowns of how each point was calculated, ensuring auditability for the match results.
+* **Premium UI**: Features a cohesive, dark-mode glassmorphism interface for managing scoring policies.
 
 ## 📚 Project Foundation
-This microservice is part of the Tender Finder 2.0 ecosystem. To ensure architectural sovereignty and consistency, please refer to the following central documentation in the orchestrator repository:
-- **[Product Vision](https://github.com/nilsbert/tender-finder-2.0-orchestrator/blob/main/docs/PRODUCT_VISION.md)**
-- **[Architecture Standards](https://github.com/nilsbert/tender-finder-2.0-orchestrator/blob/main/docs/ARCHITECTURE_STANDARDS.md)**
-- **[Style Guide](https://github.com/nilsbert/tender-finder-2.0-orchestrator/blob/main/docs/STYLE_GUIDE.md)**
-- **[Domain Glossary](https://github.com/nilsbert/tender-finder-2.0-orchestrator/blob/main/docs/DOMAIN_GLOSSARY.md)**
-## 📚 Documentation
-- **[Product Vision](https://github.com/nilsbert/tender-finder-2.0-orchestrator/blob/main/docs/PRODUCT_VISION.md)** - Overarching ecosystem strategy
-- **[Stakeholder Personas](./docs/PERSONAS.md)** - Mapping project personas to prioritization requirements
-- **[Architecture Definition](./docs/ARCHITECTURE.md)** - Technical design, scoring logic & dimensions
-- **[API Documentation](./API.md)** - Endpoint definitions for scoring results
-- **[Domain Logic](./DOMAIN.md)** - Detailed scoring formulas and weighting rules
+
+This microservice is part of the Tender Finder 2.0 ecosystem. To ensure architectural sovereignty and consistency, please refer to the central documentation in the orchestrator repository.
 
 ## 2. 🤖 Agent Context (CRITICAL)
 
 - **Role**: Scoring Intelligence & Policy Engine.
 - **Rules**:
-  - Owns the `keywords`, `scoring_results`, and `rating_config_*` tables.
-  - Provides stateless scoring calculation via pure functions.
-  - Manages the Keyword Policy (CRUD + seeding).
-  - Does NOT directly access Crawling or Enriching databases.
-- **Boundary**: Scoring logic, keyword management, and threshold configuration.
+  - Owns the `keywords`, `scoring_results`, and `rating_config` tables.
+  - Consumes authoritative keyword weights from the Distribution Authority MS.
+  - Provides a stateless scoring API for high-throughput evaluation.
+  - **Auditability**: Every score must be accompanied by a "points breakdown" explainability payload.
+- **Boundary**: Scoring mathematics, keyword evaluation, and priority thresholds.
 
 ## 3. Tech Stack
 
@@ -40,29 +37,19 @@ This microservice is part of the Tender Finder 2.0 ecosystem. To ensure architec
 | :--- | :--- |
 | **Backend** | FastAPI (Python 3.11+) |
 | **ORM** | SQLAlchemy 2.0 (Async) |
-| **Database** | SQLite (Local) / Azure MSSQL (Prod) |
-| **Frontend** | React + Vite (Rating Admin UI) |
-| **Container** | Dockerfile included |
-| **Tests** | Pytest (BDD-style) |
+| **Database** | Azure SQL (Staging/Prod) / SQLite (Local) |
+| **Frontend** | React + Vite (Premium PDS-based UI) |
+| **Styling** | Glassmorphism / Dark Mode Optimization |
 
 ## 4. Getting Started
 
 ```bash
-# 1. Navigate
 cd rating
-
-# 2. Create & activate virtual environment
 python -m venv .venv && source .venv/bin/activate
-
-# 3. Install dependencies
 pip install -r requirements.txt
-
-# 4. Seed initial keywords (Gold Standard)
-PYTHONPATH=. python scripts/seed_config.py
-
-# 5. Run the service
 PYTHONPATH=. python main.py
 ```
+
 The service will be available at `http://localhost:8012`.
 
 ## 5. API Summary
@@ -70,55 +57,35 @@ The service will be available at `http://localhost:8012`.
 | Method | Endpoint | Description |
 | :--- | :--- | :--- |
 | `GET` | `/health` | Health check |
-| `POST` | `/api/rating/score` | Calculate score for a tender |
-| `GET` | `/api/rating/keywords` | List all keywords |
-| `POST` | `/api/rating/keywords` | Add a keyword |
-| `PUT` | `/api/rating/keywords/{id}` | Update a keyword |
-| `DELETE` | `/api/rating/keywords/{id}` | Remove a keyword |
-| `GET` | `/api/rating/config/*` | Threshold configuration CRUD |
-| `PUT` | `/api/rating/config/*` | Update thresholds (with audit trail) |
-
-→ Full details in [API.md](./API.md)
+| `POST` | `/api/rating/score` | High-performance scoring for a tender payload |
+| `GET` | `/api/rating/explain/{tender_id}` | Detailed points breakdown for a result |
+| `PUT` | `/api/rating/config/thresholds` | Update priority cut-off values |
 
 ## 6. Project Structure
 
-```
+```text
 rating/
-├── main.py                 # FastAPI entry point + seeding
-├── api/
-│   ├── routes.py           # REST endpoints
-│   └── config.py           # Admin config routes
+├── main.py                 # FastAPI entry point
+├── api/v1/
+│   ├── scoring.py          # Calculation & Explainability REST
+│   └── config.py           # Threshold management
 ├── core/
-│   ├── database.py         # DB engine & session
-│   ├── scoring.py          # Pure scoring functions
-│   ├── service.py          # RatingEngine orchestrator
-│   ├── repository.py       # Data access layer
-│   └── initial_data.py     # Gold Standard keyword seeds
+│   ├── engine.py           # Weighted matching algorithm
+│   └── explainers/         # Points breakdown generators
 ├── models/
-│   ├── orm.py              # SQLAlchemy ORM models
-│   ├── schemas.py          # Pydantic v2 schemas
-│   └── config.py           # Config current/history ORM
-├── scripts/
-│   └── seed_config.py      # Config seeding
-├── tests/
-│   ├── test_scoring_bdd.py # Scoring logic BDD tests
-│   ├── test_keyword_bdd.py # Keyword CRUD BDD tests
-│   └── test_integration_bdd.py
-├── docs/                   # Feature & architecture docs
-├── ui/                     # React Admin UI
-├── Dockerfile
-└── requirements.txt
+│   ├── orm.py              # Scoring results & thresholds
+│   └── schemas.py          # Pydantic v2 schemas
+└── ui/                     # Glassmorphism Rating Dashboard
 ```
 
 ## 7. Dependencies
 
 | Direction | Service | Relationship |
 | :--- | :--- | :--- |
-| **Upstream** | Enriching MS | Receives tender data for scoring |
-| **Downstream** | Enriching MS | Returns scoring results |
-| **Downstream** | Admin Suite UI | Serves threshold configuration |
-
-→ Consumer contracts in [CONTRACTS.md](./CONTRACTS.md)
+| **Upstream** | Distribution MS | Pulls authoritative keyword weights |
+| **Upstream** | Enriching MS | Receives enriched notices for evaluation |
+| **Downstream** | Enriching MS | Returns final scores and breakdowns |
 
 ---
-*Maintained by the Tender Finder Architectural Board*
+
+Maintained by the Tender Finder Architectural Board

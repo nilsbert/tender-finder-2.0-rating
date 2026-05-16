@@ -67,7 +67,16 @@ class DatabaseManager:
             logger.error(f"❌ Failed to initialize {self.schema} database: {e}", exc_info=True)
             raise
 
+    async def init(self):
+        """Alias for init_db for compatibility."""
+        return await self.init_db()
+
+    async def close(self):
+        """Close database engine."""
+        await self.engine.dispose()
+
 # Note: All Keyword domain methods (get_keywords, save_keyword, etc.)
 # have been moved to RatingRepository for better DDD and DRY compliance.
 
 db = DatabaseManager("rating")
+get_db = db.get_session
